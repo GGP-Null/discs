@@ -19,7 +19,7 @@ struct Material
 
 class GameObject
 {
-private:
+protected:
 	XMFLOAT4X4 worldMat;
 
 	XMFLOAT3 translation;

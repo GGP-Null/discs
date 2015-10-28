@@ -104,6 +104,10 @@ MyDemoGame::~MyDemoGame()
 
 	delete mesh;
 
+	delete p_Disc1;
+	delete p_Disc2;
+	delete p_Disc3;
+
 	delete vertexShader;
 	delete pixelShader;
 }
@@ -180,6 +184,7 @@ void MyDemoGame::CreateGeometry()
 	CylinderColliderBuilder ccb(verts[0].Position);
 	for (auto i = 1; i < verts.size(); ++i) ccb.new_point(verts[i].Position);
 	cyl_col = ccb.finalize();
+	discMesh = new Mesh(load_model("../Resources/cylinder.obj"), device);
 }
 
 // --------------------------------------------------------
@@ -200,10 +205,16 @@ void MyDemoGame::LoadShaders()
 // --------------------------------------------------------
 void MyDemoGame::CreateObjects()
 {
-	Material mat;
-	mat.VertexShader = vertexShader;
-	mat.PixelShader = pixelShader;
-	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat.ResourceView));
+	Material playerMat;
+	Material discMat;
+
+	playerMat.VertexShader = vertexShader;
+	playerMat.PixelShader = pixelShader;
+	discMat.VertexShader = vertexShader;
+	discMat.PixelShader = pixelShader;
+
+	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &playerMat.ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &discMat.ResourceView));
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -212,9 +223,14 @@ void MyDemoGame::CreateObjects()
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	HR(device->CreateSamplerState(&samplerDesc, &mat.SamplerState));
 
-	object = new GameObject(mesh, mat);
+	HR(device->CreateSamplerState(&samplerDesc, &playerMat.SamplerState));
+	HR(device->CreateSamplerState(&samplerDesc, &discMat.SamplerState));
+
+	object = new Player(mesh, playerMat);
+	p_Disc1 = new Disc(discMesh, discMat);
+	p_Disc2 = new Disc(discMesh, discMat);
+	p_Disc3 = new Disc(discMesh, discMat);
 }
 
 #pragma endregion
@@ -283,6 +299,28 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		{
 			object->Translate(XMFLOAT3(deltaTime, 0, 0));
 		}
+		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+		{
+			Disc* toUse = DiscToLaunch();
+			if(toUse) 
+				object->Fire(toUse);
+		}
+		else
+		{
+			object->ReloadDisc();
+		}
+		if (p_Disc1->IsActive())
+		{
+			p_Disc1->MoveDisc(deltaTime);
+		}
+		if (p_Disc2->IsActive())
+		{
+			p_Disc2->MoveDisc(deltaTime);
+		}
+		if (p_Disc3->IsActive())
+		{
+			p_Disc3->MoveDisc(deltaTime);
+		}
 	}
 }
 void MyDemoGame::StartGame()
@@ -292,6 +330,19 @@ void MyDemoGame::StartGame()
 void MyDemoGame::EndGame()
 {
 	gState = MAIN;
+}
+// ----------------------------------------------------------
+// Temporary Test to figure out how to launch different Discs
+// ----------------------------------------------------------
+Disc* MyDemoGame::DiscToLaunch()
+{
+	if (!p_Disc1->IsActive())
+		return p_Disc1;
+	if (!p_Disc2->IsActive())
+		return p_Disc2;
+	if (!p_Disc3->IsActive())
+		return p_Disc3;
+	return NULL;
 }
 // --------------------------------------------------------
 // Clear the screen, redraw everything, present to the user
@@ -320,8 +371,9 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 
 		//Drawing is done simply by asking the renderer to do so.
 		renderer->DrawObject(object);
-
-		
+		renderer->DrawObject(p_Disc1);
+		renderer->DrawObject(p_Disc2);
+		renderer->DrawObject(p_Disc3);
 	}
 	// Present the buffer
 	//  - Puts the image we're drawing into the window so the user can see it

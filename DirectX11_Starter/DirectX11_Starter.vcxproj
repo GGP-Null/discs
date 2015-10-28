@@ -75,6 +75,7 @@
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="CylinderCollider.cpp" />
     <ClCompile Include="CylinderColliderBuilder.cpp" />
+    <ClCompile Include="Disc.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -82,6 +83,7 @@
     <ClCompile Include="MyDemoGame.cpp" />
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DirectXGameCore.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SimpleShader.cpp" />
     <ClCompile Include="TrackingCamera.cpp" />
@@ -92,6 +94,7 @@
     <ClInclude Include="CylinderCollider.h" />
     <ClInclude Include="CylinderColliderBuilder.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Disc.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="hr.h" />
     <ClInclude Include="LightManager.h" />
@@ -100,6 +103,7 @@
     <ClInclude Include="MyDemoGame.h" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DirectXGameCore.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SimpleShader.h" />

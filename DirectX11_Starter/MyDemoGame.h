@@ -6,6 +6,8 @@
 #include "Vertex.h"
 #include "Mesh.h"
 #include "GameObject.h"
+#include "Player.h"
+#include "Disc.h"
 #include "Camera.h"
 #include "DebugCamera.h"
 #include "TrackingCamera.h"
@@ -41,6 +43,8 @@ public:
 	void OnMouseUp(WPARAM btnState, int x, int y);
 	void OnMouseMove(WPARAM btnState, int x, int y);
 
+	// Disc Testing
+	Disc* DiscToLaunch();
 private:
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.
@@ -59,8 +63,12 @@ private:
 
 	Mesh* mesh;
 	CylinderCollider cyl_col;
+	Mesh* discMesh;
 
-	GameObject* object;
+	Player* object;
+	Disc* p_Disc1;
+	Disc* p_Disc2;
+	Disc* p_Disc3;
 
 	DebugCamera* debugCamera;
 	TrackingCamera* trackingCamera;
