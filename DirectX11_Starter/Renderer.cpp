@@ -43,13 +43,42 @@ void Renderer::SetCamera(Camera * c)
 // reduce the number of pixels that need to be redrawn, without putting the onus of
 // deciding draw order on the developer writing the game logic.
 
+void Renderer::SetNumberOfBuckets(unsigned int nB)
+{
+	numBuckets = nB;
+	buckets.clear();
+	for (int i = 0; i < numBuckets; i++)
+		buckets.push_back(vector<GameObject*>());
+}
+
+void Renderer::StartFrame()
+{
+}
+
 /// <summary>
 /// Draw a GameObject.
 /// </summary>
 /// <param name="object">the object to draw</param>
-void Renderer::DrawObject(GameObject* object)
+void Renderer::DrawObject(GameObject* object, unsigned int bucket)
 {
-	Material &mat = *object->GetMaterial();
+	buckets[bucket].push_back(object);
+}
+
+void Renderer::EndFrame()
+{
+	for (int i = 0; i < numBuckets; i++)
+	{
+		for (int j = 0; j < buckets[i].size(); j++)
+		{
+			doDraw(buckets[i][j]);
+		}
+		buckets[i].clear();
+	}
+}
+
+void Renderer::doDraw(GameObject* obj)
+{
+	Material &mat = *obj->GetMaterial();
 
 	mat.VertexShader->SetShader(false);
 	mat.PixelShader->SetShader(false);
@@ -64,5 +93,5 @@ void Renderer::DrawObject(GameObject* object)
 
 	camera->SetViewAndProjMatrices(mat.VertexShader);
 
-	object->Draw(context);
+	obj->Draw(context);
 }

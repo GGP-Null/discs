@@ -141,6 +141,7 @@ bool MyDemoGame::Init()
 
 	//TODO:  set up these lights in the correct places
 	renderer = new Renderer(debugCamera, deviceContext);
+	renderer->SetNumberOfBuckets(1);
 
 	DirectionalLight testLight = {
 		XMFLOAT4(0.0f, 0.4f, 0.0f, 1.0f),
@@ -392,6 +393,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	// use correct camera
 	renderer->SetCamera(useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera);
 
+	renderer->StartFrame();
+
 
 	// Background color (Cornflower Blue in this case) for clearing
 	const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
@@ -405,21 +408,25 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f,
 		0);
+
+	gState = GAME;
 	//is the game going
 	if (gState == GAME)
 	{
 
 		//Drawing is done simply by asking the renderer to do so.
 		deviceContext->RSSetState(solidRS);
-		renderer->DrawObject(object);
-		renderer->DrawObject(p_Disc1);
-		renderer->DrawObject(p_Disc2);
-		renderer->DrawObject(p_Disc3);
+		renderer->DrawObject(object, 0);
+		renderer->DrawObject(p_Disc1, 0);
+		renderer->DrawObject(p_Disc2, 0);
+		renderer->DrawObject(p_Disc3, 0);
 
 		deviceContext->RSSetState(wireframeRS);
-		renderer->DrawObject(arena);
+		renderer->DrawObject(arena, 0);
 
 	}
+
+	renderer->EndFrame();
 	// Present the buffer
 	//  - Puts the image we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME

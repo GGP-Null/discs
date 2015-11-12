@@ -20,12 +20,20 @@ public:
 	LightManager* GetLightManager();
 	void SetCamera(Camera* camera);
 
-	void DrawObject(GameObject* object);
+	void SetNumberOfBuckets(unsigned int numBuckets);
+	void StartFrame();
+	void DrawObject(GameObject* object, unsigned int bucket);
+	void EndFrame();
 private:
 	Camera* camera;
 	ID3D11DeviceContext* context;
 
 	LightManager* lm;
 	float lightsLastUpdated;
+
+	float numBuckets;
+	vector<vector<GameObject*>> buckets;
+
+	void doDraw(GameObject* obj);
 };
 
