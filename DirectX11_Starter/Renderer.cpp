@@ -93,5 +93,7 @@ void Renderer::doDraw(GameObject* obj)
 
 	camera->SetViewAndProjMatrices(mat.VertexShader);
 
+	context->RSSetState(mat.RasterizerState);
+
 	obj->Draw(context);
 }

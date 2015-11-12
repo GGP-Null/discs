@@ -31,7 +31,7 @@ private:
 	LightManager* lm;
 	float lightsLastUpdated;
 
-	float numBuckets;
+	int numBuckets;
 	vector<vector<GameObject*>> buckets;
 
 	void doDraw(GameObject* obj);

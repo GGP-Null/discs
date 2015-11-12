@@ -133,6 +133,24 @@ bool MyDemoGame::Init()
 	//  - For your own projects, feel free to expand/replace these.
 	CreateGeometry();
 	LoadShaders();
+
+	//initialize render states
+	D3D11_RASTERIZER_DESC wireframeDesc;
+	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireframeDesc.CullMode = D3D11_CULL_NONE;
+	wireframeDesc.DepthClipEnable = true;
+
+	device->CreateRasterizerState(&wireframeDesc, &wireframeRS);
+
+	D3D11_RASTERIZER_DESC solidDesc;
+	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_SOLID;
+	wireframeDesc.CullMode = D3D11_CULL_FRONT;
+	wireframeDesc.DepthClipEnable = true;
+
+	device->CreateRasterizerState(&solidDesc, &solidRS);
+
 	CreateObjects();
 
 	debugCamera = new DebugCamera(XMFLOAT3(0, 0, -5), XMFLOAT3(0, 0, 1), aspectRatio);
@@ -167,22 +185,6 @@ bool MyDemoGame::Init()
 	//set the gamestate
 	gState = MAIN;
 
-	//initialize render states
-	D3D11_RASTERIZER_DESC wireframeDesc;
-	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wireframeDesc.CullMode = D3D11_CULL_NONE;
-	wireframeDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&wireframeDesc, &wireframeRS);
-
-	D3D11_RASTERIZER_DESC solidDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_SOLID;
-	wireframeDesc.CullMode = D3D11_CULL_FRONT;
-	wireframeDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&solidDesc, &solidRS);
 
 	// setup mouse mode
 
@@ -251,11 +253,16 @@ void MyDemoGame::CreateObjects()
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
 
+	matWireframe = new Material(*mat);
+	
+	mat->RasterizerState = solidRS;
+	matWireframe->RasterizerState = wireframeRS;
+
 	object = new Player(mesh, mat);
 	p_Disc1 = new Disc(discMesh, mat, object);
 	p_Disc2 = new Disc(*p_Disc1);
 	p_Disc3 = new Disc(*p_Disc1); 
-	arena = new GameObject(arenaMesh, mat);
+	arena = new GameObject(arenaMesh, matWireframe);
 
 	/*
 	object->SetRotation(XMFLOAT3(0, 90.0f, 0));
@@ -415,13 +422,10 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	{
 
 		//Drawing is done simply by asking the renderer to do so.
-		deviceContext->RSSetState(solidRS);
 		renderer->DrawObject(object, 0);
 		renderer->DrawObject(p_Disc1, 0);
 		renderer->DrawObject(p_Disc2, 0);
 		renderer->DrawObject(p_Disc3, 0);
-
-		deviceContext->RSSetState(wireframeRS);
 		renderer->DrawObject(arena, 0);
 
 	}

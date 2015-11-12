@@ -11,6 +11,7 @@ struct Material
 	SimplePixelShader* PixelShader;
 	ID3D11ShaderResourceView* ResourceView;
 	ID3D11SamplerState* SamplerState;
+	ID3D11RasterizerState* RasterizerState;
 
 	~Material()
 	{
