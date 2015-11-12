@@ -8,6 +8,7 @@
 #include "Vertex.h"
 #include "hr.h"
 #include "Material.h"
+#include "ModelLoading.h"
 
 class Mesh
 {
@@ -16,7 +17,7 @@ public:
 	ID3D11Buffer* GetIndexBuffer();
 	int GetIndexCount();
 
-	Mesh(std::pair<std::vector<Vertex>, std::vector<UINT>> &verts_and_indices, ID3D11Device *device);
+	Mesh(VerticesAndIndices &verts_and_indices, ID3D11Device *device);
 	Mesh(const Vertex* vertices,
 		int vertexCount,
 		UINT* indices,

@@ -1,4 +1,6 @@
 #include "CylinderColliderBuilder.h"
+#include "CylinderCollider.h"
+#include "Vertex.h"
 
 using namespace DirectX;
 
@@ -37,12 +39,15 @@ CylinderCollider CylinderColliderBuilder::Finalize()
 	XMVECTOR v_halves = max - v_centroid;
 
 	XMFLOAT3 centroid, halves;
-
 	XMStoreFloat3(&centroid, v_centroid);
 	XMStoreFloat3(&halves, v_halves);
 
-	// this isn't correct
-	float radius = (halves.x > halves.z) ? halves.x : halves.z;
+	XMVECTOR max_in_xz_plane = XMVectorSet(Max.x, 0, Max.z, 0);
+
+	XMVECTOR v_length = XMVector3Length(max_in_xz_plane - v_centroid);
+
+	float radius;
+	XMStoreFloat(&radius, v_length);
 
 	return CylinderCollider(centroid, halves.y, radius);
 }

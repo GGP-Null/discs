@@ -3,7 +3,7 @@
 #include "Disc.h"
 
 Player::Player(Mesh* m, Material* mat)
-	: GameObject(m, mat)
+	: Program(m, mat)
 {
 	ableToFire = true;
 }

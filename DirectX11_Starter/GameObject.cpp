@@ -53,6 +53,7 @@ XMFLOAT3 GameObject::GetScale()
 	return scale;
 }
 
+
 /// <summary>
 /// Gets the translation vector of the object.
 /// </summary>
@@ -93,6 +94,15 @@ void GameObject::Translate(XMFLOAT3 t)
 	XMVECTOR vTranslation = XMLoadFloat3(&translation);
 	XMVECTOR vNewTranslation = XMLoadFloat3(&t);
 	XMStoreFloat3(&translation, vTranslation + vNewTranslation);
+
+	worldMatIsDirty = true;
+}
+
+void GameObject::Rotate(XMFLOAT3 r)
+{
+	XMVECTOR vRotation = XMLoadFloat3(&rotation);
+	XMVECTOR vNewRotation = XMLoadFloat3(&r);
+	XMStoreFloat3(&rotation, vRotation + vNewRotation);
 
 	worldMatIsDirty = true;
 }

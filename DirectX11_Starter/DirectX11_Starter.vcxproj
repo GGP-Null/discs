@@ -50,6 +50,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>NotSet</SubSystem>
     </Link>
     <FxCompile>
       <ShaderModel>4.1</ShaderModel>
@@ -68,10 +69,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>NotSet</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CylinderColliderComponent.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="CylinderCollider.cpp" />
     <ClCompile Include="CylinderColliderBuilder.cpp" />
@@ -81,18 +84,20 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="ModelLoading.cpp" />
+    <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MyDemoGame.cpp" />
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DirectXGameCore.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Program.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SimpleShader.cpp" />
     <ClCompile Include="TrackingCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CylinderColliderComponent.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="CylinderCollider.h" />
     <ClInclude Include="CylinderColliderBuilder.h" />
@@ -104,12 +109,14 @@
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshManager.h" />
     <ClInclude Include="ModelLoading.h" />
     <ClInclude Include="MyDemoGame.h" />
     <ClInclude Include="dxerr.h" />
     <ClInclude Include="DirectXGameCore.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Program.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SimpleShader.h" />
     <ClInclude Include="TrackingCamera.h" />

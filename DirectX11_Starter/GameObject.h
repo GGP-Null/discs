@@ -43,6 +43,7 @@ public:
 
 	//helpers
 	void Translate(XMFLOAT3 translation);
+	void Rotate(XMFLOAT3 rotation);
 	void Scale(XMFLOAT3 scale);
 
 	void Draw(ID3D11DeviceContext* context);

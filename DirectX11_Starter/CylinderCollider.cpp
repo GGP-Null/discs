@@ -1,3 +1,4 @@
+#include "CylinderColliderBuilder.h"
 #include "CylinderCollider.h"
 
 using namespace DirectX;
@@ -7,7 +8,35 @@ CylinderCollider::CylinderCollider(XMFLOAT3 centroid, float half_height, float r
 {
 }
 
-bool CylinderCollider::IsColliding(CylinderCollider const &cyl_1, CylinderCollider const &cyl_2)
+CylinderCollider CylinderCollider::Make(std::vector<XMFLOAT3> &vect)
+{
+	if (vect.begin() == vect.end()) return CylinderCollider();
+
+	CylinderColliderBuilder builder(vect[0]);
+
+	for (auto i = (vect.begin() + 1); i != vect.end(); ++i)
+	{
+		builder.NewPoint(*i);
+	}
+
+	return builder.Finalize();
+}
+
+CylinderCollider CylinderCollider::Make(std::vector<Vertex> &vect)
+{
+	if (vect.begin() == vect.end()) return CylinderCollider();
+
+	CylinderColliderBuilder builder(vect[0].Position);
+
+	for (auto i = (vect.begin() + 1); i != vect.end(); ++i)
+	{
+		builder.NewPoint(i->Position);
+	}
+
+	return builder.Finalize();
+}
+
+bool IsColliding(CylinderCollider const &cyl_1, CylinderCollider const &cyl_2)
 {
 	// TODO: rotation
 

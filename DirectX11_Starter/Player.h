@@ -1,10 +1,9 @@
 #pragma once
-#include "GameObject.h"
-#include "Material.h"
+#include "Program.h"
 
 class Disc;
 
-class Player: public GameObject
+class Player: public Program
 {
 public:
 	Player(Mesh* m, Material* mat);
@@ -14,4 +13,3 @@ public:
 private:
 	bool ableToFire;
 };
-

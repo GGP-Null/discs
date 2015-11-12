@@ -2,15 +2,13 @@
 
 using namespace DirectX;
 
-Mesh::Mesh(
-	std::pair<std::vector<Vertex>, std::vector<UINT>> &verts_and_indices,
-	ID3D11Device *device)
+Mesh::Mesh(VerticesAndIndices &verts_and_indices, ID3D11Device *device)
 {
 	setup(
-		verts_and_indices.first.data(),
-		verts_and_indices.first.size(),
-		verts_and_indices.second.data(),
-		verts_and_indices.second.size(),
+		verts_and_indices.vertices.data(),
+		verts_and_indices.vertices.size(),
+		verts_and_indices.indices.data(),
+		verts_and_indices.indices.size(),
 		device
 		);
 }

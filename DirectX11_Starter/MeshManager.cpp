@@ -1,12 +1,58 @@
-#include "ModelLoading.h"
-#include <DirectXMath.h>
+#include "MeshManager.h"
 #include <fstream>
-#include <exception>
-#include <string>
 
+using namespace std;
+using namespace MeshManager;
 using namespace DirectX;
 
-std::pair<std::vector<Vertex>, std::vector<UINT>> LoadModel(char *filename)
+struct meshAndCollider
+{
+	Mesh *mesh;
+	CylinderCollider *collider;
+};
+
+VerticesAndIndices LoadVertsAndIndices(const char *filename);
+
+ID3D11Device *device;
+std::unordered_map<std::string, meshAndCollider> loadedModels;
+std::unordered_map<Mesh*, CylinderCollider*> meshToCollider;
+
+void MeshManager::SetDevice(ID3D11Device *pDevice)
+{
+	device = pDevice;
+}
+
+Mesh *MeshManager::LoadModel(std::string path)
+{
+	auto meshAndCol = loadedModels.find(path);
+
+	// found
+	if (meshAndCol != loadedModels.end())
+		return meshAndCol->second.mesh;
+
+	auto vertsAndIndices = LoadVertsAndIndices(path.data());
+
+	auto *mesh = new Mesh(vertsAndIndices, device);
+
+	auto *cylinderCol = new CylinderCollider(CylinderCollider::Make(vertsAndIndices.vertices));
+
+	meshToCollider.emplace(mesh, cylinderCol);
+
+	auto emplaceResult = loadedModels.emplace(path, meshAndCollider{ mesh, cylinderCol });
+
+	return mesh;
+}
+
+CylinderCollider *MeshManager::GetColliderForMesh(Mesh *mesh)
+{
+	auto collider = meshToCollider.find(mesh);
+
+	if (collider == meshToCollider.end()) return nullptr;
+
+	return collider->second;
+}
+
+VerticesAndIndices LoadVertsAndIndices(const char *filename)
 {
 	std::ifstream obj(filename);
 
@@ -112,5 +158,5 @@ std::pair<std::vector<Vertex>, std::vector<UINT>> LoadModel(char *filename)
 	// Close (shouldn't be necessary?)
 	obj.close();
 
-	return std::make_pair(verts, indices);
+	return{ verts, indices };
 }
