@@ -99,6 +99,7 @@ VerticesAndIndices LoadVertsAndIndices(const char *filename)
 				&uv.x, &uv.y);
 
 			// Add to the list of uv's
+			uv.y = 1.0f - uv.y;
 			uvs.push_back(uv);
 		}
 		else if (chars[0] == 'v')
