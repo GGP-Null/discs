@@ -24,14 +24,42 @@ namespace Input {
 	typedef MouseButtonStateTracker::ButtonState MouseButtonState;
 
 	// TODO: Gamepad Stuff
-	typedef DirectX::GamePad GamePad;
-	typedef GamePad::State GamePadState;
-	typedef DirectX::GamePad::ButtonStateTracker GamePadButtonStateTracker;
-	typedef GamePadButtonStateTracker::ButtonState GamePadButtonState;
+	typedef DirectX::GamePad GamePadManager;
 #pragma endregion
 
-	GamePadState GetGamePadState(int player);
-	bool GamePadButtonIsPressed(GamePadButtonState);
+	class GamePad
+	{
+	public:
+		typedef GamePadManager::State State;
+		typedef GamePadManager::ButtonStateTracker ButtonStateTracker;
+		typedef ButtonStateTracker::ButtonState ButtonState;
+		static const int MAX_PLAYERS = DirectX::GamePad::MAX_PLAYER_COUNT;
+
+		GamePad();
+		static GamePad FromId(int id);
+		static GamePad Next();
+
+		bool IsConnected();
+
+		State const& GetState();
+		ButtonStateTracker const& GetTrackedState();
+
+		static bool ButtonPressedThisFrame(ButtonState);
+		static bool ButtonIsDown(ButtonState);
+		static bool ButtonIsHeld(ButtonState);
+
+		static bool ButtonReleasedThisFrame(ButtonState);
+		static bool ButtonIsUp(ButtonState);
+		static bool ButtonHasBeenUp(ButtonState);
+
+		bool SetVibes(float left, float right, float leftTrig = 0.f, float rightTrig = 0.f);
+
+		int GetId();
+
+	private:
+		GamePad(int id);
+		int id;
+	};
 
 #pragma region Keyboard Functions
 	/// <summary>
@@ -246,6 +274,8 @@ namespace Input {
 	void UpdateKeyboard();
 
 	void UpdateMouse();
+
+	void UpdateGamepads();
 
 	void Update();
 #pragma endregion

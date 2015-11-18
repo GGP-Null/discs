@@ -80,6 +80,7 @@
     <ClCompile Include="CylinderColliderBuilder.cpp" />
     <ClCompile Include="Disc.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GamePad.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="LightManager.cpp" />
