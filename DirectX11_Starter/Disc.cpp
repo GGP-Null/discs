@@ -29,7 +29,7 @@ void Disc::MoveDisc(float dt)
 		translation = XMFLOAT3(0, 0, -5);
 		isActive = false;
 	}
-	if (translation.z > 13.5)
+	if (translation.z > 14.5)
 	{
 		translation.z = 13.5;
 		velocity.z *= -1;
