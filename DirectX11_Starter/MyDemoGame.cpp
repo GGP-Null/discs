@@ -312,7 +312,6 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		)
 		Quit();
 
-
 	switch (gState) {
 	case GAME:
 		if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
@@ -326,6 +325,8 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 		break;
 	}
+
+	FrameUpdateData upData{ deltaTime, totalTime };
 
 	debugCamera->Update(deltaTime, totalTime);
 	trackingCamera->Update(deltaTime, totalTime);
@@ -347,16 +348,7 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 	switch (gState) {
 	case GAME:
-		if (KeyIsDown(Keys::J)) object->Translate(XMFLOAT3(-deltaTime, 0, 0));
-		else if (KeyIsDown(Keys::K)) object->Translate(XMFLOAT3(deltaTime, 0, 0));
-		if (KeyIsDown(Keys::U)) object->Rotate(XMFLOAT3(0, -deltaTime, 0));
-		else if (KeyIsDown(Keys::I)) object->Rotate(XMFLOAT3(0, deltaTime, 0));
-
-		if (padState.IsConnected()) {
-			object->Translate(XMFLOAT3(padState.thumbSticks.leftX * deltaTime, 0, 0));
-			float rotAmt = padState.triggers.right - padState.triggers.left;
-			object->Rotate(XMFLOAT3(0, rotAmt * deltaTime, 0));
-		}
+		object->Update(upData);
 
 		if (KeyPressedThisFrame(Keys::Space) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
 		{

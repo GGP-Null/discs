@@ -4,6 +4,7 @@
 #include <memory>
 #include "Mesh.h"
 #include "SimpleShader.h"
+#include "FrameUpdateData.h"
 
 using namespace DirectX;
 using namespace std;
@@ -22,7 +23,6 @@ protected:
 	Mesh *mesh;
 	Material *material;
 
-protected:
 	void updateWorldMatrix();
 	void init();
 
@@ -45,6 +45,8 @@ public:
 	void Translate(XMFLOAT3 translation);
 	void Rotate(XMFLOAT3 rotation);
 	void Scale(XMFLOAT3 scale);
+
+	virtual void Update(FrameUpdateData);
 
 	void Draw(ID3D11DeviceContext* context);
 };

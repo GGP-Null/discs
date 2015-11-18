@@ -137,6 +137,11 @@ void GameObject::updateWorldMatrix()
 	XMStoreFloat4x4(&worldMat, XMMatrixTranspose(mWorldMat));
 }
 
+void GameObject::Update(FrameUpdateData upData)
+{
+	// sup
+}
+
 /// <summary>
 /// Draw the current mesh using the current material.  
 /// </summary>
