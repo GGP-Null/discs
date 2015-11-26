@@ -14,6 +14,11 @@ Material * GameObject::GetMaterial()
 	return material;
 }
 
+Mesh* GameObject::GetMesh()
+{
+	return mesh;
+}
+
 void GameObject::init()
 {
 	worldMat = XMFLOAT4X4();

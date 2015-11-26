@@ -42,3 +42,13 @@ void Camera::SetViewAndProjMatrices(SimpleVertexShader* vertexShader)
 	vertexShader->SetMatrix4x4("view", viewMat);
 	vertexShader->SetMatrix4x4("projection", projMat);
 }
+
+XMFLOAT4X4 Camera::getView()
+{
+	return viewMat;
+}
+
+XMFLOAT4X4 Camera::getProjection()
+{
+	return projMat;
+}

@@ -26,6 +26,7 @@
 #include "ModelLoading.h"
 #include "CylinderCollider.h"
 #include "WICTextureLoader.h"
+#include "DDSTextureLoader.h"
 #include "MeshManager.h"
 #include "MaterialManager.h"
 #include "Prototypes.h"
@@ -108,6 +109,12 @@ MyDemoGame::~MyDemoGame()
 
 	delete vertexShader;
 	delete pixelShader;
+	delete skyVS;
+	delete skyPS;
+
+	skyTexture->Release();
+	dsSky->Release();
+	rsSky->Release();
 
 	MeshManager::DestroyAllMeshes();
 
@@ -204,6 +211,7 @@ void MyDemoGame::CreateGeometry()
 	p2Mesh = MeshManager::LoadModel("../Resources/playerTwo.obj");
 
 	arenaMesh = MeshManager::LoadModel("../Resources/cube.obj");
+	skyMesh = MeshManager::LoadModel("../Resources/cube.obj");
 
 	discMesh = MeshManager::LoadModel("../Resources/dotDisc.obj");
 	platformMesh = MeshManager::LoadModel("../Resources/dotPlatform.obj");
@@ -223,6 +231,29 @@ void MyDemoGame::LoadShaders()
 
 	MaterialManager::SetStandardVertexShader(vertexShader);
 	MaterialManager::SetStandardPixelShader(pixelShader);
+
+	skyVS = new SimpleVertexShader(device, deviceContext);
+	skyVS->LoadShaderFile(L"SkyVS.cso");
+
+	skyPS = new SimplePixelShader(device, deviceContext);
+	skyPS->LoadShaderFile(L"SkyPS.cso");
+	DirectX::CreateDDSTextureFromFile(device, deviceContext, L"../Resources/SunnyCubeMap.dds", 0, &skyTexture);
+
+	// Create a rasterizer state for the sky box
+	D3D11_RASTERIZER_DESC rastDesc;
+	ZeroMemory(&rastDesc, sizeof(rastDesc));
+	rastDesc.FillMode = D3D11_FILL_SOLID;
+	rastDesc.CullMode = D3D11_CULL_FRONT;
+	rastDesc.DepthClipEnable = true;
+	device->CreateRasterizerState(&rastDesc, &rsSky);
+
+	// A depth state for the sky rendering
+	D3D11_DEPTH_STENCIL_DESC dsDesc;
+	ZeroMemory(&dsDesc, sizeof(dsDesc));
+	dsDesc.DepthEnable = true;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	device->CreateDepthStencilState(&dsDesc, &dsSky);
 }
 
 // --------------------------------------------------------
@@ -455,6 +486,31 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 
 		deviceContext->RSSetState(wireframeRS);
 		renderer->DrawObject(arena, 0);
+
+		// Now that solid "stuff" is drawn, draw the sky
+		UINT stride = sizeof(Vertex);
+		UINT offset = 0;
+		ID3D11Buffer* skyVB = skyMesh->GetVertexBuffer();
+		ID3D11Buffer* skyIB = skyMesh->GetIndexBuffer();
+		deviceContext->IASetVertexBuffers(0, 1, &skyVB, &stride, &offset);
+		deviceContext->IASetIndexBuffer(skyIB, DXGI_FORMAT_R32_UINT, 0);
+
+		skyVS->SetMatrix4x4("view", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getView());
+		skyVS->SetMatrix4x4("projection", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getProjection());
+		skyVS->SetShader();
+
+		skyPS->SetShaderResourceView("sky", skyTexture);
+		skyPS->SetShader();
+
+		deviceContext->RSSetState(rsSky);
+		deviceContext->OMSetDepthStencilState(dsSky, 0);
+		deviceContext->DrawIndexed(skyMesh->GetIndexCount(), 0, 0);
+
+		// Reset the states to their defaults
+		deviceContext->RSSetState(0);
+		deviceContext->OMSetDepthStencilState(0, 0);
+
+
 	}
 
 	renderer->EndFrame();
