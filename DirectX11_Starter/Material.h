@@ -12,6 +12,11 @@ struct Material
 	ID3D11ShaderResourceView* ResourceView;
 	ID3D11SamplerState* SamplerState;
 
+	Material() :
+		VertexShader(nullptr), PixelShader(nullptr),
+		ResourceView(nullptr), SamplerState(nullptr)
+	{}
+
 	~Material()
 	{
 		if (ResourceView) ResourceView->Release();

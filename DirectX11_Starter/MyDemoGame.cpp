@@ -101,13 +101,14 @@ MyDemoGame::~MyDemoGame()
 	delete trackingCamera;
 
 	delete mat;
-	delete mesh;
-	delete discMesh;
+	delete arenaMat;
 
 	delete object;
 
 	delete vertexShader;
 	delete pixelShader;
+
+	MeshManager::DestroyAllMeshes();
 
 	//delete wireframeRS;
 }

@@ -160,3 +160,14 @@ VerticesAndIndices LoadVertsAndIndices(const char *filename)
 
 	return{ verts, indices };
 }
+
+void MeshManager::DestroyAllMeshes()
+{
+	for (auto &mnc : loadedModels) {
+		delete mnc.second.collider;
+		delete mnc.second.mesh;
+	}
+
+	loadedModels.clear();
+	meshToCollider.clear();
+}
