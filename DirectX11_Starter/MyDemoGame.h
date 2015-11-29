@@ -72,7 +72,7 @@ private:
 
 	CylinderCollider cyl_col;
 
-	Player* object;
+	Player* player;
 	Player* player2;
 	std::array<Disc*, 3> discs;
 	std::array<Disc*, 3> p2discs;

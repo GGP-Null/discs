@@ -17,6 +17,11 @@ struct Material
 		ResourceView(nullptr), SamplerState(nullptr)
 	{}
 
+	Material(SimpleVertexShader *vertShader, SimplePixelShader *pixShader) :
+		VertexShader(vertShader), PixelShader(pixShader),
+		ResourceView(nullptr), SamplerState(nullptr)
+	{}
+
 	~Material()
 	{
 		if (ResourceView) ResourceView->Release();

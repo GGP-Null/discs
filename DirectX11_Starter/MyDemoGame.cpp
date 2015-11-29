@@ -27,6 +27,8 @@
 #include "CylinderCollider.h"
 #include "WICTextureLoader.h"
 #include "MeshManager.h"
+#include "MaterialManager.h"
+#include "Prototypes.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -100,10 +102,9 @@ MyDemoGame::~MyDemoGame()
 	delete debugCamera;
 	delete trackingCamera;
 
-	delete mat;
-	delete arenaMat;
+	MaterialManager::DestroyAllMaterials();
 
-	delete object;
+	delete player;
 
 	delete vertexShader;
 	delete pixelShader;
@@ -218,6 +219,9 @@ void MyDemoGame::LoadShaders()
 
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
+
+	MaterialManager::SetStandardVertexShader(vertexShader);
+	MaterialManager::SetStandardPixelShader(pixelShader);
 }
 
 // --------------------------------------------------------
@@ -225,13 +229,8 @@ void MyDemoGame::LoadShaders()
 // --------------------------------------------------------
 void MyDemoGame::CreateObjects()
 {
-	mat = new Material;
-	arenaMat = new Material;
-
-	mat->VertexShader = vertexShader;
-	mat->PixelShader = pixelShader;
-	arenaMat->VertexShader = vertexShader;
-	arenaMat->PixelShader = pixelShader;
+	mat = MaterialManager::CloneStandardMaterial();
+	arenaMat = MaterialManager::CloneStandardMaterial();
 
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &arenaMat->ResourceView));
@@ -246,23 +245,14 @@ void MyDemoGame::CreateObjects()
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
 
-	object = new Player(mesh, mat);
-	for (auto &disc : discs) disc = new Disc(discMesh, mat, object);
+	player = new Player(mesh, mat);
+	for (auto &disc : discs) disc = new Disc(discMesh, mat, player);
 	player2 = new Player(p2Mesh, mat);
 	for (auto &disc : p2discs) disc = new Disc(discMesh, mat, player2);
-	object->Scale(XMFLOAT3(.1f, .1f, .1f));
-	player2->Scale(XMFLOAT3(.1f, .1f, .1f));
-	player2->Translate(XMFLOAT3(0, 0.0, 12.0));
-
 
 	arena = new GameObject(arenaMesh, mat);
 	p1Platform = new GameObject(platformMesh, mat);
 	p2Platform = new GameObject(platformMesh, mat);
-
-	/*
-	object->SetRotation(XMFLOAT3(0, 90.0f, 0));
-	object->SetScale(XMFLOAT3(0.5f, 0.5f, 0.5f));
-	*/
 
 	arena->SetScale(XMFLOAT3(7, 7, 17));
 	arena->SetTranslation(XMFLOAT3(0, 0, 6));
@@ -349,20 +339,20 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 	switch (gState) {
 	case GAME:
-		object->Update(upData);
+		player->Update(upData);
 
 		if (KeyPressedThisFrame(Keys::Space) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
 		{
 			Disc* toUse = DiscToLaunch();
 			if(toUse) 
-				object->Fire(toUse);
+				player->Fire(toUse);
 		}
 		else
 		{
-			object->ReloadDisc();
+			player->ReloadDisc();
 		}
 
-		CylinderCollider playerCollider = object->colliderComp;
+		CylinderCollider playerCollider = player->colliderComp;
 
 		static float collisionTimer = 0.0f;
 
@@ -442,7 +432,7 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 
 		//Drawing is done simply by asking the renderer to do so.
 		deviceContext->RSSetState(solidRS);
-		renderer->DrawObject(object);
+		renderer->DrawObject(player);
 		renderer->DrawObject(player2);
 		renderer->DrawObject(p1Platform);
 		renderer->DrawObject(p2Platform);
