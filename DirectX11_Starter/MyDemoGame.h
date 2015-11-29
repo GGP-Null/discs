@@ -85,8 +85,7 @@ private:
 	TrackingCamera* trackingCamera;
 	bool useDebugCamera;
 
-	Input::GamePadState gamePadState;
-	Input::GamePadButtonStateTracker gamePadTracker;
+	Input::GamePad gamePad;
 
 	Renderer* renderer;
 	gameState gState;
