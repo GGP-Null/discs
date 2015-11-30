@@ -25,6 +25,9 @@ Player *Prototypes::MakePlayer(unsigned short playerNum)
 
 	if (playerNum == 1) player->Translate(XMFLOAT3(0, 0.0, 12.0));
 
+	//players can know their player number, so why not set it here?
+	player->SetNum(playerNum);
+
 	return player;
 }
 
