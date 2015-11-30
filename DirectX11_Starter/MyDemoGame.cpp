@@ -167,7 +167,7 @@ bool MyDemoGame::Init()
 	//set the gamestate
 	gState = MAIN;
 
-	//initialize render states
+	//initialize rasterizer states
 	D3D11_RASTERIZER_DESC wireframeDesc;
 	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
 	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -245,10 +245,17 @@ void MyDemoGame::CreateObjects()
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
 
-	player = new Player(mesh, mat);
-	for (auto &disc : discs) disc = new Disc(discMesh, mat, player);
-	player2 = new Player(p2Mesh, mat);
-	for (auto &disc : p2discs) disc = new Disc(discMesh, mat, player2);
+	Prototypes::SetPlayerMesh(0, mesh);
+	Prototypes::SetPlayerMesh(1, p2Mesh);
+	Prototypes::SetPlayerMaterial(mat);
+	player = Prototypes::MakePlayer(0);
+	player2 = Prototypes::MakePlayer(1);
+
+	Prototypes::SetDiscMesh(discMesh);
+	Prototypes::SetDiscMaterial(mat);
+
+	for (auto &disc : discs) disc = Prototypes::MakeDisc(player);
+	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
 	arena = new GameObject(arenaMesh, mat);
 	p1Platform = new GameObject(platformMesh, mat);
