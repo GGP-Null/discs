@@ -137,7 +137,7 @@ bool MyDemoGame::Init()
 	CreateObjects();
 
 	debugCamera = new DebugCamera(XMFLOAT3(0, 0, -5), XMFLOAT3(0, 0, 1), aspectRatio);
-	trackingCamera = new TrackingCamera(XMFLOAT3(0, 2, -7), XMFLOAT3(0, 0, 1), object, XMFLOAT3(0, 1, 0), .3f, aspectRatio);
+	trackingCamera = new TrackingCamera(XMFLOAT3(0, 2, -7), XMFLOAT3(0, 0, 1), player, XMFLOAT3(0, 1, 0), .3f, aspectRatio);
 	useDebugCamera = false;
 
 	//TODO:  set up these lights in the correct places
