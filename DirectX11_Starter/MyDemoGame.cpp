@@ -132,6 +132,24 @@ bool MyDemoGame::Init()
 	//  - For your own projects, feel free to expand/replace these.
 	CreateGeometry();
 	LoadShaders();
+
+	//initialize render states
+	D3D11_RASTERIZER_DESC wireframeDesc;
+	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireframeDesc.CullMode = D3D11_CULL_NONE;
+	wireframeDesc.DepthClipEnable = true;
+
+	device->CreateRasterizerState(&wireframeDesc, &wireframeRS);
+
+	D3D11_RASTERIZER_DESC solidDesc;
+	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_SOLID;
+	wireframeDesc.CullMode = D3D11_CULL_FRONT;
+	wireframeDesc.DepthClipEnable = true;
+
+	device->CreateRasterizerState(&solidDesc, &solidRS);
+
 	CreateObjects();
 
 	debugCamera = new DebugCamera(XMFLOAT3(0, 0, -5), XMFLOAT3(0, 0, 1), aspectRatio);
@@ -140,6 +158,7 @@ bool MyDemoGame::Init()
 
 	//TODO:  set up these lights in the correct places
 	renderer = new Renderer(debugCamera, deviceContext);
+	renderer->SetNumberOfBuckets(1);
 
 	DirectionalLight testLight = {
 		XMFLOAT4(0.0f, 0.4f, 0.0f, 1.0f),
@@ -165,22 +184,6 @@ bool MyDemoGame::Init()
 	//set the gamestate
 	gState = MAIN;
 
-	//initialize render states
-	D3D11_RASTERIZER_DESC wireframeDesc;
-	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wireframeDesc.CullMode = D3D11_CULL_NONE;
-	wireframeDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&wireframeDesc, &wireframeRS);
-
-	D3D11_RASTERIZER_DESC solidDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_SOLID;
-	wireframeDesc.CullMode = D3D11_CULL_FRONT;
-	wireframeDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&solidDesc, &solidRS);
 
 	// setup mouse mode
 
@@ -245,16 +248,22 @@ void MyDemoGame::CreateObjects()
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
 
+	matWireframe = new Material(*mat);
+	
+	mat->RasterizerState = solidRS;
+	matWireframe->RasterizerState = wireframeRS;
+
 	object = new Player(mesh, mat);
 	for (auto &disc : discs) disc = new Disc(discMesh, mat, object);
 	player2 = new Player(p2Mesh, mat);
 	for (auto &disc : p2discs) disc = new Disc(discMesh, mat, player2);
 	object->Scale(XMFLOAT3(.1f, .1f, .1f));
+
 	player2->Scale(XMFLOAT3(.1f, .1f, .1f));
 	player2->Translate(XMFLOAT3(0, 0.0, 12.0));
 
 
-	arena = new GameObject(arenaMesh, mat);
+	arena = new GameObject(arenaMesh, matWireframe);
 	p1Platform = new GameObject(platformMesh, mat);
 	p2Platform = new GameObject(platformMesh, mat);
 
@@ -430,6 +439,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	// use correct camera
 	renderer->SetCamera(useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera);
 
+	renderer->StartFrame();
+
 
 	// Background color (Cornflower Blue in this case) for clearing
 	const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
@@ -443,24 +454,26 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
 		1.0f,
 		0);
+
+	gState = GAME;
 	//is the game going
 	if (gState == GAME)
 	{
 
-		//Drawing is done simply by asking the renderer to do so.
 		deviceContext->RSSetState(solidRS);
-		renderer->DrawObject(object);
-		renderer->DrawObject(player2);
-		renderer->DrawObject(p1Platform);
-		renderer->DrawObject(p2Platform);
+		renderer->DrawObject(object, 0);
+		renderer->DrawObject(player2, 0);
+		renderer->DrawObject(p1Platform, 0);
+		renderer->DrawObject(p2Platform, 0);
 
-		for (auto &disc : discs) renderer->DrawObject(disc);
-		for (auto &disc : p2discs) renderer->DrawObject(disc);
+		for (auto &disc : discs) renderer->DrawObject(disc, 0);
+		for (auto &disc : p2discs) renderer->DrawObject(disc, 0);
 
 		deviceContext->RSSetState(wireframeRS);
-		renderer->DrawObject(arena);
-
+		renderer->DrawObject(arena, 0);
 	}
+
+	renderer->EndFrame();
 	// Present the buffer
 	//  - Puts the image we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME

@@ -69,6 +69,7 @@ private:
 	Mesh* platformMesh;
 	Mesh *arenaMesh;
 	Material *mat, *arenaMat;
+	Material* matWireframe;
 
 	CylinderCollider cyl_col;
 
