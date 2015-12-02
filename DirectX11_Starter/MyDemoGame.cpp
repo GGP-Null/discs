@@ -27,6 +27,8 @@
 #include "CylinderCollider.h"
 #include "WICTextureLoader.h"
 #include "MeshManager.h"
+#include "MaterialManager.h"
+#include "Prototypes.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -100,14 +102,14 @@ MyDemoGame::~MyDemoGame()
 	delete debugCamera;
 	delete trackingCamera;
 
-	delete mat;
-	delete mesh;
-	delete discMesh;
+	MaterialManager::DestroyAllMaterials();
 
-	delete object;
+	delete player;
 
 	delete vertexShader;
 	delete pixelShader;
+
+	MeshManager::DestroyAllMeshes();
 
 	//delete wireframeRS;
 }
@@ -153,7 +155,7 @@ bool MyDemoGame::Init()
 	CreateObjects();
 
 	debugCamera = new DebugCamera(XMFLOAT3(0, 0, -5), XMFLOAT3(0, 0, 1), aspectRatio);
-	trackingCamera = new TrackingCamera(XMFLOAT3(0, 2, -7), XMFLOAT3(0, 0, 1), object, XMFLOAT3(0, 1, 0), .3f, aspectRatio);
+	trackingCamera = new TrackingCamera(XMFLOAT3(0, 2, -7), XMFLOAT3(0, 0, 1), player, XMFLOAT3(0, 1, 0), .3f, aspectRatio);
 	useDebugCamera = false;
 
 	//TODO:  set up these lights in the correct places
@@ -184,9 +186,7 @@ bool MyDemoGame::Init()
 	//set the gamestate
 	gState = MAIN;
 
-
 	// setup mouse mode
-
 	Input::SetMouseMode(Input::MouseMode::MODE_RELATIVE);
 
 	// Successfully initialized
@@ -220,6 +220,9 @@ void MyDemoGame::LoadShaders()
 
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
+
+	MaterialManager::SetStandardVertexShader(vertexShader);
+	MaterialManager::SetStandardPixelShader(pixelShader);
 }
 
 // --------------------------------------------------------
@@ -227,16 +230,11 @@ void MyDemoGame::LoadShaders()
 // --------------------------------------------------------
 void MyDemoGame::CreateObjects()
 {
-	mat = new Material;
-	arenaMat = new Material;
-
-	mat->VertexShader = vertexShader;
-	mat->PixelShader = pixelShader;
-	arenaMat->VertexShader = vertexShader;
-	arenaMat->PixelShader = pixelShader;
+	mat = MaterialManager::CloneStandardMaterial();
+	matWireframe = MaterialManager::CloneStandardMaterial();
 
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &arenaMat->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -247,39 +245,33 @@ void MyDemoGame::CreateObjects()
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
-
-	matWireframe = new Material(*mat);
 	
 	mat->RasterizerState = solidRS;
 	matWireframe->RasterizerState = wireframeRS;
 
-	object = new Player(mesh, mat);
-	for (auto &disc : discs) disc = new Disc(discMesh, mat, object);
-	player2 = new Player(p2Mesh, mat);
-	for (auto &disc : p2discs) disc = new Disc(discMesh, mat, player2);
-	object->Scale(XMFLOAT3(.1f, .1f, .1f));
+	Prototypes::SetPlayerMesh(0, mesh);
+	Prototypes::SetPlayerMesh(1, p2Mesh);
+	Prototypes::SetPlayerMaterial(mat);
+	player = Prototypes::MakePlayer(0);
+	player2 = Prototypes::MakePlayer(1);
 
-	player2->Scale(XMFLOAT3(.1f, .1f, .1f));
-	player2->Translate(XMFLOAT3(0, 0.0, 12.0));
+	Prototypes::SetDiscMesh(discMesh);
+	Prototypes::SetDiscMaterial(mat);
 
+	for (auto &disc : discs) disc = Prototypes::MakeDisc(player);
+	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
-	arena = new GameObject(arenaMesh, matWireframe);
-	p1Platform = new GameObject(platformMesh, mat);
-	p2Platform = new GameObject(platformMesh, mat);
+	Prototypes::SetArenaMesh(arenaMesh);
+	Prototypes::SetArenaMaterial(matWireframe);
 
-	/*
-	object->SetRotation(XMFLOAT3(0, 90.0f, 0));
-	object->SetScale(XMFLOAT3(0.5f, 0.5f, 0.5f));
-	*/
+	arena = Prototypes::MakeArena();
 
-	arena->SetScale(XMFLOAT3(7, 7, 17));
-	arena->SetTranslation(XMFLOAT3(0, 0, 6));
+	Prototypes::SetPlatformMesh(platformMesh);
+	Prototypes::SetPlatformMaterial(0, mat);
+	Prototypes::SetPlatformMaterial(1, mat);
 
-	p1Platform->SetScale(XMFLOAT3(0.5, 0.5, 0.5));
-	p2Platform->SetScale(XMFLOAT3(0.5, 0.5, 0.5));
-
-	p1Platform->Translate(XMFLOAT3(0, -0.2, 0.0));
-	p2Platform->Translate(XMFLOAT3(0, -0.2, 12.0));
+	p1Platform = Prototypes::MakePlatform(0);
+	p2Platform = Prototypes::MakePlatform(1);
 }
 
 #pragma endregion
@@ -321,7 +313,6 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		)
 		Quit();
 
-
 	switch (gState) {
 	case GAME:
 		if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
@@ -335,6 +326,8 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 		break;
 	}
+
+	FrameUpdateData upData{ deltaTime, totalTime };
 
 	debugCamera->Update(deltaTime, totalTime);
 	trackingCamera->Update(deltaTime, totalTime);
@@ -356,29 +349,20 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 	switch (gState) {
 	case GAME:
-		if (KeyIsDown(Keys::J)) object->Translate(XMFLOAT3(-deltaTime, 0, 0));
-		else if (KeyIsDown(Keys::K)) object->Translate(XMFLOAT3(deltaTime, 0, 0));
-		if (KeyIsDown(Keys::U)) object->Rotate(XMFLOAT3(0, -deltaTime, 0));
-		else if (KeyIsDown(Keys::I)) object->Rotate(XMFLOAT3(0, deltaTime, 0));
-
-		if (padState.IsConnected()) {
-			object->Translate(XMFLOAT3(padState.thumbSticks.leftX * deltaTime, 0, 0));
-			float rotAmt = padState.triggers.right - padState.triggers.left;
-			object->Rotate(XMFLOAT3(0, rotAmt * deltaTime, 0));
-		}
+		player->Update(upData);
 
 		if (KeyPressedThisFrame(Keys::Space) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
 		{
 			Disc* toUse = DiscToLaunch();
 			if(toUse) 
-				object->Fire(toUse);
+				player->Fire(toUse);
 		}
 		else
 		{
-			object->ReloadDisc();
+			player->ReloadDisc();
 		}
 
-		CylinderCollider playerCollider = object->colliderComp;
+		CylinderCollider playerCollider = player->colliderComp;
 
 		static float collisionTimer = 0.0f;
 
@@ -461,7 +445,7 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	{
 
 		deviceContext->RSSetState(solidRS);
-		renderer->DrawObject(object, 0);
+		renderer->DrawObject(player, 0);
 		renderer->DrawObject(player2, 0);
 		renderer->DrawObject(p1Platform, 0);
 		renderer->DrawObject(p2Platform, 0);
