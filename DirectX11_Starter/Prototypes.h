@@ -17,7 +17,9 @@ namespace Prototypes
 	Disc *MakeDisc(Player *player);
 
 	void SetArenaMesh(Mesh *mesh);
+	void SetArenaMaterial(Material *mat);
 	GameObject *MakeArena();
 	void SetPlatformMesh(Mesh *mesh);
-	GameObject *MakePlatform(unsigned short playerNum = 0);
+	void SetPlatformMaterial(unsigned short playerNum, Material *mat);
+	GameObject *MakePlatform(unsigned short playerNum);
 };

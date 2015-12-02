@@ -257,18 +257,17 @@ void MyDemoGame::CreateObjects()
 	for (auto &disc : discs) disc = Prototypes::MakeDisc(player);
 	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
-	arena = new GameObject(arenaMesh, mat);
-	p1Platform = new GameObject(platformMesh, mat);
-	p2Platform = new GameObject(platformMesh, mat);
+	Prototypes::SetArenaMesh(arenaMesh);
+	Prototypes::SetArenaMaterial(arenaMat);
 
-	arena->SetScale(XMFLOAT3(7, 7, 17));
-	arena->SetTranslation(XMFLOAT3(0, 0, 6));
+	arena = Prototypes::MakeArena();
 
-	p1Platform->SetScale(XMFLOAT3(0.5, 0.5, 0.5));
-	p2Platform->SetScale(XMFLOAT3(0.5, 0.5, 0.5));
+	Prototypes::SetPlatformMesh(platformMesh);
+	Prototypes::SetPlatformMaterial(0, mat);
+	Prototypes::SetPlatformMaterial(1, mat);
 
-	p1Platform->Translate(XMFLOAT3(0, -0.2, 0.0));
-	p2Platform->Translate(XMFLOAT3(0, -0.2, 12.0));
+	p1Platform = Prototypes::MakePlatform(0);
+	p2Platform = Prototypes::MakePlatform(1);
 }
 
 #pragma endregion

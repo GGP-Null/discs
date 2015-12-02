@@ -53,6 +53,10 @@ XMFLOAT3 GameObject::GetScale()
 	return scale;
 }
 
+string const &GameObject::GetDebugName()
+{
+	return debugName;
+}
 
 /// <summary>
 /// Gets the translation vector of the object.
@@ -83,6 +87,11 @@ void GameObject::SetScale(XMFLOAT3 s)
 {
 	scale = s;
 	worldMatIsDirty = true;
+}
+
+void GameObject::SetDebugName(string const& str)
+{
+	debugName = str;
 }
 
 /// <summary>

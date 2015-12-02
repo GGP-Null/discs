@@ -2,6 +2,7 @@
 
 #include <DirectXMath.h>
 #include <memory>
+#include <string>
 #include "Mesh.h"
 #include "SimpleShader.h"
 #include "FrameUpdateData.h"
@@ -23,6 +24,8 @@ protected:
 	Mesh *mesh;
 	Material *material;
 
+	string debugName;
+
 	void updateWorldMatrix();
 	void init();
 
@@ -36,10 +39,14 @@ public:
 	XMFLOAT3 GetRotation();
 	XMFLOAT3 GetScale();
 
+	string const &GetDebugName();
+
 	//setters for worldmat elements
 	void SetTranslation(XMFLOAT3 translation);
 	void SetRotation(XMFLOAT3 rotation);
 	void SetScale(XMFLOAT3 scale);
+
+	void SetDebugName(string const &str);
 
 	//helpers
 	void Translate(XMFLOAT3 translation);
