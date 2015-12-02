@@ -1,9 +1,13 @@
 #include "MeshManager.h"
 #include <fstream>
+#include <tuple>
+#include <functional>
 
 using namespace std;
 using namespace MeshManager;
 using namespace DirectX;
+
+typedef function<XMFLOAT3(XMFLOAT3)> vectorTransformer;
 
 struct meshAndCollider
 {
@@ -11,23 +15,24 @@ struct meshAndCollider
 	CylinderCollider *collider;
 };
 
-VerticesAndIndices LoadVertsAndIndices(const char *filename);
 
 ID3D11Device *device;
-std::unordered_map<std::string, meshAndCollider> loadedModels;
-std::unordered_map<Mesh*, CylinderCollider*> meshToCollider;
+unordered_map<string, meshAndCollider> regularModels;
+unordered_map<string, meshAndCollider> invertedModels;
+unordered_map<Mesh*, CylinderCollider*> meshToCollider;
 
 void MeshManager::SetDevice(ID3D11Device *pDevice)
 {
 	device = pDevice;
 }
 
-Mesh *MeshManager::LoadModel(std::string path)
+Mesh *MeshManager::LoadModel(std::string path, bool invertNormals)
 {
-	auto meshAndCol = loadedModels.find(path);
+	auto &modelCollection = (invertNormals) ? invertedModels : regularModels;
+	auto meshAndCol = modelCollection.find(path);
 
 	// found
-	if (meshAndCol != loadedModels.end())
+	if (meshAndCol != modelCollection.end())
 		return meshAndCol->second.mesh;
 
 	auto vertsAndIndices = LoadVertsAndIndices(path.data());
@@ -38,7 +43,7 @@ Mesh *MeshManager::LoadModel(std::string path)
 
 	meshToCollider.emplace(mesh, cylinderCol);
 
-	auto emplaceResult = loadedModels.emplace(path, meshAndCollider{ mesh, cylinderCol });
+	auto emplaceResult = modelCollection.emplace(path, meshAndCollider{ mesh, cylinderCol });
 
 	return mesh;
 }
@@ -52,8 +57,15 @@ CylinderCollider *MeshManager::GetColliderForMesh(Mesh *mesh)
 	return collider->second;
 }
 
-VerticesAndIndices LoadVertsAndIndices(const char *filename)
+VerticesAndIndices MeshManager::LoadVertsAndIndices(const char *filename, bool invertNormals)
 {
+	vectorTransformer normalTrans;
+	if (invertNormals) {
+		normalTrans = [](XMFLOAT3 normal) -> XMFLOAT3 { return XMFLOAT3(-normal.x, -normal.y, -normal.z); };
+	} else {
+		normalTrans = [](XMFLOAT3 normal) -> XMFLOAT3 { return normal; };
+	};
+	
 	std::ifstream obj(filename);
 
 	if (!obj.is_open()) {
@@ -87,7 +99,7 @@ VerticesAndIndices LoadVertsAndIndices(const char *filename)
 				&norm.x, &norm.y, &norm.z);
 
 			// Add to the list of normals
-			normals.push_back(norm);
+			normals.push_back(normalTrans(norm));
 		}
 		else if (chars[0] == 'v' && chars[1] == 't')
 		{
@@ -164,11 +176,16 @@ VerticesAndIndices LoadVertsAndIndices(const char *filename)
 
 void MeshManager::DestroyAllMeshes()
 {
-	for (auto &mnc : loadedModels) {
+	for (auto &mnc : regularModels) {
+		delete mnc.second.collider;
+		delete mnc.second.mesh;
+	}
+	for (auto &mnc : invertedModels) {
 		delete mnc.second.collider;
 		delete mnc.second.mesh;
 	}
 
-	loadedModels.clear();
+	regularModels.clear();
+	invertedModels.clear();
 	meshToCollider.clear();
 }

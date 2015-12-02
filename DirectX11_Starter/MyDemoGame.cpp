@@ -210,7 +210,7 @@ void MyDemoGame::CreateGeometry()
 	mesh = MeshManager::LoadModel("../Resources/playerOne.obj");
 	p2Mesh = MeshManager::LoadModel("../Resources/playerTwo.obj");
 
-	arenaMesh = MeshManager::LoadModel("../Resources/cube.obj");
+	arenaMesh = MeshManager::LoadModel("../Resources/cube.obj", true);
 	skyMesh = MeshManager::LoadModel("../Resources/cube.obj");
 
 	discMesh = MeshManager::LoadModel("../Resources/dotDisc.obj");
@@ -293,7 +293,7 @@ void MyDemoGame::CreateObjects()
 	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
 	Prototypes::SetArenaMesh(arenaMesh);
-	Prototypes::SetArenaMaterial(matWireframe);
+	Prototypes::SetArenaMaterial(mat);
 
 	arena = Prototypes::MakeArena();
 
