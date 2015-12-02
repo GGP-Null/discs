@@ -1,6 +1,5 @@
 #include "MeshManager.h"
 #include <fstream>
-#include <tuple>
 #include <functional>
 
 using namespace std;
@@ -35,7 +34,7 @@ Mesh *MeshManager::LoadModel(std::string path, bool invertNormals)
 	if (meshAndCol != modelCollection.end())
 		return meshAndCol->second.mesh;
 
-	auto vertsAndIndices = LoadVertsAndIndices(path.data());
+	auto vertsAndIndices = LoadVertsAndIndices(path.data(), invertNormals);
 
 	auto *mesh = new Mesh(vertsAndIndices, device);
 
@@ -157,9 +156,18 @@ VerticesAndIndices MeshManager::LoadVertsAndIndices(const char *filename, bool i
 			v3.Normal = normals[i[8] - 1];
 
 			// Add the verts to the vector
-			verts.push_back(v1);
-			verts.push_back(v2);
-			verts.push_back(v3);
+			if (invertNormals)
+			{
+				verts.push_back(v2);
+				verts.push_back(v1);
+				verts.push_back(v3);
+			}
+			else
+			{
+				verts.push_back(v1);
+				verts.push_back(v2);
+				verts.push_back(v3);
+			}
 
 			// Add three more indices
 			indices.push_back(triangleCounter++);
