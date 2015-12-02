@@ -229,6 +229,8 @@ void MyDemoGame::LoadShaders()
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
 
+	MaterialManager::SetDevice(device);
+
 	MaterialManager::SetStandardVertexShader(vertexShader);
 	MaterialManager::SetStandardPixelShader(pixelShader);
 

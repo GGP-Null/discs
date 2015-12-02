@@ -12,6 +12,7 @@ struct Material
 	ID3D11ShaderResourceView* ResourceView;
 	ID3D11SamplerState* SamplerState;
 	ID3D11RasterizerState* RasterizerState;
+	ID3D11BlendState* BlendState;
 
 	Material() :
 		VertexShader(nullptr), PixelShader(nullptr),
