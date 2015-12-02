@@ -33,6 +33,7 @@ public:
 	GameObject(Mesh* mesh, Material* material);
 
 	Material* GetMaterial();
+	Mesh* GetMesh();
 
 	//getters for worldmat elements
 	XMFLOAT3 GetTranslation();

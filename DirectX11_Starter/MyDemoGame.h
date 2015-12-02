@@ -68,6 +68,7 @@ private:
 	Mesh* discMesh;
 	Mesh* platformMesh;
 	Mesh *arenaMesh;
+	Mesh* skyMesh;
 	Material *mat;
 	Material* matWireframe;
 
@@ -93,7 +94,15 @@ private:
 	// Wrappers for DirectX shaders to provide simplified functionality
 	SimpleVertexShader* vertexShader;
 	SimplePixelShader* pixelShader;
+	SimpleVertexShader* skyVS;
+	SimplePixelShader* skyPS;
 
 	ID3D11RasterizerState* wireframeRS;
 	ID3D11RasterizerState* solidRS;
+
+	// Render states for the sky
+	ID3D11RasterizerState* rsSky;
+	ID3D11DepthStencilState* dsSky;
+
+	ID3D11ShaderResourceView* skyTexture;
 };
