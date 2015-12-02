@@ -276,6 +276,7 @@ void MyDemoGame::CreateObjects()
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
+	matWireframe->SamplerState = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
 	matWireframe->RasterizerState = wireframeRS;
@@ -488,6 +489,7 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		renderer->DrawObject(arena, 0);
 
 		// Now that solid "stuff" is drawn, draw the sky
+		/*
 		UINT stride = sizeof(Vertex);
 		UINT offset = 0;
 		ID3D11Buffer* skyVB = skyMesh->GetVertexBuffer();
@@ -509,6 +511,7 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		// Reset the states to their defaults
 		deviceContext->RSSetState(0);
 		deviceContext->OMSetDepthStencilState(0, 0);
+		*/
 
 
 	}
