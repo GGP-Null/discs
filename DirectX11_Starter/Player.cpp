@@ -18,7 +18,7 @@ void Player::Fire(Disc* d)
 {
 	if (ableToFire)
 	{
-		d->Launch(translation, rotation);
+		d->Launch(XMFLOAT3(translation.x, translation.y + 0.5f, translation.z), rotation);
 		ableToFire = false;
 	}
 }

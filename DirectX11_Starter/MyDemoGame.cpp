@@ -277,14 +277,14 @@ void MyDemoGame::CreateObjects()
 	matTrans->transparency = 0.5f;
 	matTransWhite->transparency = 0.5f;
 
-	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/playerOneUV.png", nullptr, &p1mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/playerTwoUV.png", nullptr, &p2mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &matTrans->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/discTexture.png", nullptr, &discMat->ResourceView));
-	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/platformTexture.png", nullptr, &platformMat->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/playerOneUV.png", nullptr, &p1mat->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/playerTwoUV.png", nullptr, &p2mat->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/blueGlow.jpg", nullptr, &matTrans->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/discTexture.png", nullptr, &discMat->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/platformTexture.png", nullptr, &platformMat->ResourceView));
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
