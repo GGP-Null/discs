@@ -12,7 +12,7 @@ Disc::Disc(Mesh* m, Material* mat, Player* p)
 {
 	translation = XMFLOAT3(0, 0, -5);
 	isActive = false;
-	SetScale(XMFLOAT3(0.5f, 0.2f, 0.5f));
+	SetScale(XMFLOAT3(0.25f, 0.2f, 0.25f));
 	player = p;
 }
 
