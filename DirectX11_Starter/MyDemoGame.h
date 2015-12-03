@@ -71,6 +71,10 @@ private:
 	Mesh* skyMesh;
 	Material *mat;
 	Material* matWireframe;
+	Material* matTrans;
+	Material* matTransWhite;
+	Material* discMat;
+	Material* platformMat;
 
 	CylinderCollider cyl_col;
 

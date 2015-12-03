@@ -263,9 +263,18 @@ void MyDemoGame::CreateObjects()
 {
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
+	discMat = MaterialManager::CloneStandardMaterial();
+	platformMat = MaterialManager::CloneStandardMaterial();
+	matTrans = MaterialManager::CloneStandardTransparentMaterial();
+	matTransWhite = MaterialManager::CloneStandardTransparentMaterial();
+	matTrans->transparency = 0.5f;
+	matTransWhite->transparency = 0.5f;
 
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/discTexture.png", nullptr, &discMat->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/platformTexture.png", nullptr, &platformMat->ResourceView));
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -276,7 +285,14 @@ void MyDemoGame::CreateObjects()
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
+
+	p1mat->SamplerState = mat->SamplerState;
+	p2mat->SamplerState = mat->SamplerState;
 	matWireframe->SamplerState = mat->SamplerState;
+	matTrans->SamplerState = mat->SamplerState;
+	matTransWhite->SamplerState = mat->SamplerState;
+	discMat->SamplerState = mat->SamplerState;
+	platformMat->SamplerState = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
 	matWireframe->RasterizerState = wireframeRS;
@@ -288,7 +304,7 @@ void MyDemoGame::CreateObjects()
 	player2 = Prototypes::MakePlayer(1);
 
 	Prototypes::SetDiscMesh(discMesh);
-	Prototypes::SetDiscMaterial(mat);
+	Prototypes::SetDiscMaterial(discMat);
 
 	for (auto &disc : discs) disc = Prototypes::MakeDisc(player);
 	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
@@ -299,8 +315,8 @@ void MyDemoGame::CreateObjects()
 	arena = Prototypes::MakeArena();
 
 	Prototypes::SetPlatformMesh(platformMesh);
-	Prototypes::SetPlatformMaterial(0, mat);
-	Prototypes::SetPlatformMaterial(1, mat);
+	Prototypes::SetPlatformMaterial(0, platformMat);
+	Prototypes::SetPlatformMaterial(1, platformMat);
 
 	p1Platform = Prototypes::MakePlatform(0);
 	p2Platform = Prototypes::MakePlatform(1);
