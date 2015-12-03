@@ -529,6 +529,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		skyVS->SetShader();
 
 		skyPS->SetShaderResourceView("sky", skyTexture);
+		//SUPER ugly fix.  I wish we had another reference to this
+		skyPS->SetSamplerState("trilinear", mat->SamplerState);
 		skyPS->SetShader();
 
 		deviceContext->RSSetState(rsSky);
