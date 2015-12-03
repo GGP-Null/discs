@@ -71,6 +71,8 @@ private:
 	Mesh* skyMesh;
 	Material *mat;
 	Material* matWireframe;
+	Material* matTrans;
+	Material* matTransWhite;
 
 	CylinderCollider cyl_col;
 
@@ -99,6 +101,7 @@ private:
 
 	ID3D11RasterizerState* wireframeRS;
 	ID3D11RasterizerState* solidRS;
+	ID3D11RasterizerState* transRS;
 
 	// Render states for the sky
 	ID3D11RasterizerState* rsSky;

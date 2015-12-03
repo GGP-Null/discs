@@ -36,6 +36,8 @@ using namespace DirectX;
 using namespace Input;
 using Input::GamePad;
 
+#define SCROLL_WHEEL_TO_TRANSPARENCY (0.1f / 120.0f)
+
 
 #pragma region Win32 Entry Point (WinMain)
 // --------------------------------------------------------
@@ -153,11 +155,12 @@ bool MyDemoGame::Init()
 
 	D3D11_RASTERIZER_DESC solidDesc;
 	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_SOLID;
-	wireframeDesc.CullMode = D3D11_CULL_FRONT;
-	wireframeDesc.DepthClipEnable = true;
+	solidDesc.FillMode = D3D11_FILL_SOLID;
+	solidDesc.CullMode = D3D11_CULL_BACK;
+	solidDesc.DepthClipEnable = true;
 
 	device->CreateRasterizerState(&solidDesc, &solidRS);
+	device->CreateRasterizerState(&solidDesc, &transRS);
 
 	CreateObjects();
 
@@ -167,7 +170,6 @@ bool MyDemoGame::Init()
 
 	//TODO:  set up these lights in the correct places
 	renderer = new Renderer(debugCamera, deviceContext);
-	renderer->SetNumberOfBuckets(1);
 
 	DirectionalLight testLight = {
 		XMFLOAT4(0.0f, 0.4f, 0.0f, 1.0f),
@@ -195,6 +197,7 @@ bool MyDemoGame::Init()
 
 	// setup mouse mode
 	Input::SetMouseMode(Input::MouseMode::MODE_RELATIVE);
+	Input::ResetScrollWheel();
 
 	// Successfully initialized
 	return true;
@@ -228,6 +231,8 @@ void MyDemoGame::LoadShaders()
 
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
+
+	MaterialManager::SetDevice(device);
 
 	MaterialManager::SetStandardVertexShader(vertexShader);
 	MaterialManager::SetStandardPixelShader(pixelShader);
@@ -263,9 +268,15 @@ void MyDemoGame::CreateObjects()
 {
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
+	matTrans = MaterialManager::CloneStandardTransparentMaterial();
+	matTransWhite = MaterialManager::CloneStandardTransparentMaterial();
+	matTrans->transparency = 0.5f;
+	matTransWhite->transparency = 0.5f;
 
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &matTrans->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -276,8 +287,14 @@ void MyDemoGame::CreateObjects()
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
+	HR(device->CreateSamplerState(&samplerDesc, &matWireframe->SamplerState));
+
+	matTrans->SamplerState = mat->SamplerState;
+	matTransWhite->SamplerState = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
+	matTrans->RasterizerState = transRS;
+	matTrans->RasterizerState = transRS;
 	matWireframe->RasterizerState = wireframeRS;
 
 	Prototypes::SetPlayerMesh(0, mesh);
@@ -293,7 +310,7 @@ void MyDemoGame::CreateObjects()
 	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
 	Prototypes::SetArenaMesh(arenaMesh);
-	Prototypes::SetArenaMaterial(mat);
+	Prototypes::SetArenaMaterial(matTrans);
 
 	arena = Prototypes::MakeArena();
 
@@ -345,11 +362,23 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		Quit();
 
 	switch (gState) {
-	case GAME:
+	case GAME: {
 		if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
 			EndGame();
-		// shouldn't get here anywho
+
+		int scroll = Input::GetScrollWheel();
+		Input::ResetScrollWheel();
+
+		auto &transparency = arena->GetMaterial()->transparency;
+
+		transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
+
+		transparency = (transparency > 1.0f) ? 1.0f : transparency;
+		transparency = (transparency < 0.0f) ? 0.0f : transparency;
+
 		break;
+	}
+
 
 	case MAIN:
 		if (KeyPressedThisFrame(Keys::Enter) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
@@ -476,16 +505,16 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	{
 
 		deviceContext->RSSetState(solidRS);
-		renderer->DrawObject(player, 0);
-		renderer->DrawObject(player2, 0);
-		renderer->DrawObject(p1Platform, 0);
-		renderer->DrawObject(p2Platform, 0);
+		renderer->DrawObject(player);
+		renderer->DrawObject(player2);
+		renderer->DrawObject(p1Platform);
+		renderer->DrawObject(p2Platform);
 
-		for (auto &disc : discs) renderer->DrawObject(disc, 0);
-		for (auto &disc : p2discs) renderer->DrawObject(disc, 0);
+		for (auto &disc : discs) renderer->DrawObject(disc);
+		for (auto &disc : p2discs) renderer->DrawObject(disc);
 
 		deviceContext->RSSetState(wireframeRS);
-		renderer->DrawObject(arena, 0);
+		renderer->DrawObject(arena);
 
 		// Now that solid "stuff" is drawn, draw the sky
 		UINT stride = sizeof(Vertex);
