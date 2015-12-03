@@ -18,6 +18,7 @@ protected:
 	XMFLOAT3 translation;
 	XMFLOAT3 rotation;
 	XMFLOAT3 scale;
+	float distFromCamera;
 	
 	bool worldMatIsDirty;
 
@@ -36,9 +37,11 @@ public:
 	Mesh* GetMesh();
 
 	//getters for worldmat elements
-	XMFLOAT3 GetTranslation();
+	XMFLOAT3 GetTranslation() const;
 	XMFLOAT3 GetRotation();
 	XMFLOAT3 GetScale();
+
+	float GetDistFromCamera() const;
 
 	string const &GetDebugName();
 
@@ -46,6 +49,8 @@ public:
 	void SetTranslation(XMFLOAT3 translation);
 	void SetRotation(XMFLOAT3 rotation);
 	void SetScale(XMFLOAT3 scale);
+
+	void SetDistFromCamera(float dist);
 
 	void SetDebugName(string const &str);
 
@@ -56,5 +61,5 @@ public:
 
 	virtual void Update(FrameUpdateData);
 
-	void Draw(ID3D11DeviceContext* context);
+	virtual void Draw(ID3D11DeviceContext* context);
 };

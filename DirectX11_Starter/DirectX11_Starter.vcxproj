@@ -106,6 +106,7 @@
     <ClInclude Include="CylinderColliderBuilder.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Disc.h" />
+    <ClInclude Include="DistanceFromCamera.h" />
     <ClInclude Include="FrameUpdateData.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="hr.h" />

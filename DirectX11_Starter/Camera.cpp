@@ -43,6 +43,11 @@ void Camera::SetViewAndProjMatrices(SimpleVertexShader* vertexShader)
 	vertexShader->SetMatrix4x4("projection", projMat);
 }
 
+XMFLOAT3 Camera::GetPosition() const
+{
+	return position;
+}
+
 XMFLOAT4X4 Camera::getView()
 {
 	return viewMat;

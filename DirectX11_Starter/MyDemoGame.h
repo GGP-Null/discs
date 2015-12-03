@@ -69,6 +69,8 @@ private:
 	Mesh* platformMesh;
 	Mesh *arenaMesh;
 	Mesh* skyMesh;
+	Material *p1mat;
+	Material *p2mat;
 	Material *mat;
 	Material* matWireframe;
 	Material* matTrans;
@@ -103,6 +105,7 @@ private:
 
 	ID3D11RasterizerState* wireframeRS;
 	ID3D11RasterizerState* solidRS;
+	ID3D11RasterizerState* transRS;
 
 	// Render states for the sky
 	ID3D11RasterizerState* rsSky;

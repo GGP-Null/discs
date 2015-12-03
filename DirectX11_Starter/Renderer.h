@@ -1,4 +1,6 @@
 #pragma once
+#include <queue>
+#include <functional>
 #include "GameObject.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
@@ -20,9 +22,8 @@ public:
 	LightManager* GetLightManager();
 	void SetCamera(Camera* camera);
 
-	void SetNumberOfBuckets(unsigned int numBuckets);
 	void StartFrame();
-	void DrawObject(GameObject* object, unsigned int bucket);
+	void DrawObject(GameObject* object);
 	void EndFrame();
 private:
 	Camera* camera;
@@ -31,9 +32,12 @@ private:
 	LightManager* lm;
 	float lightsLastUpdated;
 
-	int numBuckets;
-	vector<vector<GameObject*>> buckets;
+	std::vector<GameObject*> standardBucket;
+	// TODO: make distance function
+	//std::priority_queue<GameObject*, std::vector<GameObject*>, std::equal_to<GameObject*>> transparentBucket;
+	std::priority_queue<GameObject*> transparentBucket;
 
 	void doDraw(GameObject* obj);
+	void doDrawTransparent(GameObject* obj);
 };
 

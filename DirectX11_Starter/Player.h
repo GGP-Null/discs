@@ -14,9 +14,13 @@ public:
 	void ReloadDisc();
 	void SetNum(int num);
 	int GetNum();
+	void OnDiscHit();
+	virtual void Draw(ID3D11DeviceContext* context) override;
 private:
 	Input::GamePad gamePad;
 	Input::Key moveLeft, moveRight, rotLeft, rotRight, fire;
 	int playerNum;
 	bool ableToFire;
+	int numTimesHit;
+	bool isActive;
 };

@@ -14,7 +14,6 @@ class DebugCamera : public Camera
 private:
 	bool viewMatIsDirty;
 
-	XMFLOAT3 position;
 	XMFLOAT3 direction;
 
 	float rotX;

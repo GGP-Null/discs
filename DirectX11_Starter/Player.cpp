@@ -6,6 +6,8 @@ Player::Player(Mesh* m, Material* mat)
 	: Program(m, mat)
 {
 	ableToFire = true;
+	isActive = true;
+	numTimesHit = 0;
 }
 
 
@@ -36,6 +38,12 @@ int Player::GetNum()
 	return playerNum;
 }
 
+void Player::OnDiscHit()
+{
+	numTimesHit++;
+	if (numTimesHit >= 2) isActive = false;
+}
+
 void Player::Update(FrameUpdateData upData)
 {
 	auto deltaTime = upData.DeltaTime;
@@ -51,4 +59,9 @@ void Player::Update(FrameUpdateData upData)
 		float rotAmt = padState.triggers.right - padState.triggers.left;
 		Rotate(XMFLOAT3(0, rotAmt * deltaTime, 0));
 	}
+}
+
+void Player::Draw(ID3D11DeviceContext* context) 
+{
+	if (isActive) GameObject::Draw(context);
 }
