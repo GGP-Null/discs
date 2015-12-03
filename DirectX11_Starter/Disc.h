@@ -12,6 +12,7 @@ public:
 	void Launch(XMFLOAT3 p, XMFLOAT3 r);
 	void MoveDisc(float dt);
 	bool IsActive() const { return isActive; }
+	void OnHit();
 	CylinderColliderComponent colliderComp;
 private:
 	bool isActive;

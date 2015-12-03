@@ -362,7 +362,7 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 			player->ReloadDisc();
 		}
 
-		CylinderCollider playerCollider = player->colliderComp;
+		CylinderCollider playerCollider = player2->colliderComp;
 
 		static float collisionTimer = 0.0f;
 
@@ -379,7 +379,13 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 			CylinderCollider discCollider = disc->colliderComp;
 			auto colliding = IsColliding(playerCollider, discCollider);
 
-			if (colliding) discIsColliding[i] = colliding;
+			if (colliding)
+			{
+				discIsColliding[i] = colliding;
+
+				player2->OnDiscHit();
+				disc->OnHit();
+			}
 		}
 
 		if (collisionTimer > 1.0f)

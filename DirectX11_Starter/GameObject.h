@@ -55,5 +55,5 @@ public:
 
 	virtual void Update(FrameUpdateData);
 
-	void Draw(ID3D11DeviceContext* context);
+	virtual void Draw(ID3D11DeviceContext* context);
 };
