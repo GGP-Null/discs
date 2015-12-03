@@ -69,6 +69,8 @@ private:
 	Mesh* platformMesh;
 	Mesh *arenaMesh;
 	Mesh* skyMesh;
+	Material *p1mat;
+	Material *p2mat;
 	Material *mat;
 	Material* matWireframe;
 	Material* matTrans;

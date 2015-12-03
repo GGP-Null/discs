@@ -6,11 +6,12 @@ std::array<Mesh *, 2> playerMeshes;
 Mesh *discMesh, *arenaMesh, *platformMesh;
 
 std::array<Material *, 2> platformMaterial;
-Material *playerMaterial, *discMaterial, *arenaMaterial;
+std::array<Material *, 2> playerMaterials;
+Material *discMaterial, *arenaMaterial;
 
-void Prototypes::SetPlayerMaterial(Material *mat)
+void Prototypes::SetPlayerMaterial(unsigned short playerNum, Material *mat)
 {
-	playerMaterial = mat;
+	playerMaterials[playerNum] = mat;
 }
 
 void Prototypes::SetPlayerMesh(unsigned short playerNum, Mesh *mesh)
@@ -20,7 +21,7 @@ void Prototypes::SetPlayerMesh(unsigned short playerNum, Mesh *mesh)
 
 Player *Prototypes::MakePlayer(unsigned short playerNum)
 {
-	auto player = new Player(playerMeshes[playerNum], playerMaterial);
+	auto player = new Player(playerMeshes[playerNum], playerMaterials[playerNum]);
 
 	player->Scale(XMFLOAT3(.1f, .1f, .1f));
 
