@@ -126,6 +126,9 @@
     <ClCompile Include="TestPostProcess.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dxerr.h">
@@ -215,11 +218,16 @@
     <ClInclude Include="DistanceFromCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="PostProcess.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="TestPostProcess.h">
       <Filter>Header Files\Graphics</Filter>
+=======
+    <ClInclude Include="Console.h">
+      <Filter>Header Files</Filter>
+>>>>>>> d6db0f9... Add windows console support
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

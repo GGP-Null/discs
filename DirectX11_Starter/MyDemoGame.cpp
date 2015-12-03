@@ -404,13 +404,16 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		int scroll = Input::GetScrollWheel();
 		Input::ResetScrollWheel();
 
-		auto &transparency = arena->GetMaterial()->transparency;
+		if (scroll) {
+			cout << scroll << '\n';
 
-		transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
+			auto &transparency = arena->GetMaterial()->transparency;
 
-		transparency = (transparency > 1.0f) ? 1.0f : transparency;
-		transparency = (transparency < 0.0f) ? 0.0f : transparency;
+			transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
 
+			transparency = (transparency > 1.0f) ? 1.0f : transparency;
+			transparency = (transparency < 0.0f) ? 0.0f : transparency;
+		}
 		break;
 	}
 
