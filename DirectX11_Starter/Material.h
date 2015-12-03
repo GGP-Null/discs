@@ -13,20 +13,30 @@ struct Material
 	ID3D11SamplerState* SamplerState;
 	ID3D11RasterizerState* RasterizerState;
 	ID3D11BlendState* BlendState;
+	float transparency;
 
 	Material() :
 		VertexShader(nullptr), PixelShader(nullptr),
-		ResourceView(nullptr), SamplerState(nullptr)
+		ResourceView(nullptr), SamplerState(nullptr),
+		RasterizerState(nullptr), BlendState(nullptr)
 	{}
 
 	Material(SimpleVertexShader *vertShader, SimplePixelShader *pixShader) :
 		VertexShader(vertShader), PixelShader(pixShader),
-		ResourceView(nullptr), SamplerState(nullptr)
+		ResourceView(nullptr), SamplerState(nullptr),
+		RasterizerState(nullptr), BlendState(nullptr)
 	{}
+
+	bool IsTransparent()
+	{
+		return BlendState;
+	}
 
 	~Material()
 	{
 		if (ResourceView) ResourceView->Release();
 		if (SamplerState) SamplerState->Release();
+		if (RasterizerState) RasterizerState->Release();
+		if (BlendState) BlendState->Release();
 	}
 };

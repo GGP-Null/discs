@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#define BLEND_STATE_SAMPLE_DEFAULT 0xFFFFFFFF
+
 /// <summary>
 /// Default constructor.
 /// </summary>
@@ -43,14 +45,6 @@ void Renderer::SetCamera(Camera * c)
 // reduce the number of pixels that need to be redrawn, without putting the onus of
 // deciding draw order on the developer writing the game logic.
 
-void Renderer::SetNumberOfBuckets(unsigned int nB)
-{
-	numBuckets = nB;
-	buckets.clear();
-	for (int i = 0; i < numBuckets; i++)
-		buckets.push_back(vector<GameObject*>());
-}
-
 void Renderer::StartFrame()
 {
 }
@@ -59,20 +53,26 @@ void Renderer::StartFrame()
 /// Draw a GameObject.
 /// </summary>
 /// <param name="object">the object to draw</param>
-void Renderer::DrawObject(GameObject* object, unsigned int bucket)
+void Renderer::DrawObject(GameObject* object)
 {
-	buckets[bucket].push_back(object);
+	if (object->GetMaterial()->IsTransparent())
+		transparentBucket.push(object);
+	else
+		standardBucket.push_back(object);
 }
 
 void Renderer::EndFrame()
 {
-	for (int i = 0; i < numBuckets; i++)
-	{
-		for (int j = 0; j < buckets[i].size(); j++)
-		{
-			doDraw(buckets[i][j]);
-		}
-		buckets[i].clear();
+	context->OMSetBlendState(nullptr, nullptr, BLEND_STATE_SAMPLE_DEFAULT);
+	for (GameObject *go : standardBucket)
+		doDraw(go);
+	standardBucket.clear();
+
+	while (!transparentBucket.empty()) {
+		GameObject *go = transparentBucket.top();
+		transparentBucket.pop();
+
+		doDrawTransparent(go);
 	}
 }
 
@@ -96,4 +96,31 @@ void Renderer::doDraw(GameObject* obj)
 	context->RSSetState(mat.RasterizerState);
 
 	obj->Draw(context);
+}
+
+void Renderer::doDrawTransparent(GameObject* obj)
+{
+	Material &mat = *obj->GetMaterial();
+
+	mat.VertexShader->SetShader(false);
+	mat.PixelShader->SetShader(false);
+
+	if (lightsLastUpdated < lm->GetLastUpdated())
+	{
+		lm->SetLightBufferData(mat.PixelShader);
+		lightsLastUpdated = lm->GetLastUpdated();
+	}
+
+	context->OMSetBlendState(mat.BlendState, nullptr, BLEND_STATE_SAMPLE_DEFAULT);
+
+	mat.PixelShader->SetFloat("alpha", mat.transparency);
+
+	mat.PixelShader->CopyAllBufferData();
+
+	camera->SetViewAndProjMatrices(mat.VertexShader);
+
+	context->RSSetState(mat.RasterizerState);
+
+	obj->Draw(context);
+
 }

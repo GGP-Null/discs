@@ -167,7 +167,6 @@ bool MyDemoGame::Init()
 
 	//TODO:  set up these lights in the correct places
 	renderer = new Renderer(debugCamera, deviceContext);
-	renderer->SetNumberOfBuckets(1);
 
 	DirectionalLight testLight = {
 		XMFLOAT4(0.0f, 0.4f, 0.0f, 1.0f),
@@ -265,6 +264,8 @@ void MyDemoGame::CreateObjects()
 {
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
+	matTrans = MaterialManager::CloneStandardTransparentMaterial();
+	matTrans->transparency = 0.5f;
 
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
@@ -280,6 +281,7 @@ void MyDemoGame::CreateObjects()
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
 	
 	mat->RasterizerState = solidRS;
+	matTrans->RasterizerState = solidRS;
 	matWireframe->RasterizerState = wireframeRS;
 
 	Prototypes::SetPlayerMesh(0, mesh);
@@ -300,7 +302,8 @@ void MyDemoGame::CreateObjects()
 	arena = Prototypes::MakeArena();
 
 	Prototypes::SetPlatformMesh(platformMesh);
-	Prototypes::SetPlatformMaterial(0, mat);
+	Prototypes::SetPlatformMaterial(0, matTrans);
+	//Prototypes::SetPlatformMaterial(0, mat);
 	Prototypes::SetPlatformMaterial(1, mat);
 
 	p1Platform = Prototypes::MakePlatform(0);
@@ -478,16 +481,16 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	{
 
 		deviceContext->RSSetState(solidRS);
-		renderer->DrawObject(player, 0);
-		renderer->DrawObject(player2, 0);
-		renderer->DrawObject(p1Platform, 0);
-		renderer->DrawObject(p2Platform, 0);
+		renderer->DrawObject(player);
+		renderer->DrawObject(player2);
+		renderer->DrawObject(p1Platform);
+		renderer->DrawObject(p2Platform);
 
-		for (auto &disc : discs) renderer->DrawObject(disc, 0);
-		for (auto &disc : p2discs) renderer->DrawObject(disc, 0);
+		for (auto &disc : discs) renderer->DrawObject(disc);
+		for (auto &disc : p2discs) renderer->DrawObject(disc);
 
 		deviceContext->RSSetState(wireframeRS);
-		renderer->DrawObject(arena, 0);
+		renderer->DrawObject(arena);
 
 		// Now that solid "stuff" is drawn, draw the sky
 		UINT stride = sizeof(Vertex);

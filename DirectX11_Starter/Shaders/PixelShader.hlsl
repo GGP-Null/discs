@@ -50,6 +50,11 @@ cbuffer lightBuffer : register(b0)
 	PointLight pLight7;
 }
 
+cbuffer materialData : register(b1)
+{
+	float1 alpha;
+}
+
 Texture2D diffuseTexture : register(t0);
 SamplerState basicSampler : register(s0);
 
@@ -136,5 +141,5 @@ float4 main(VertexToPixel input) : SV_TARGET
 	diffuseAmount = saturate(dot(directionToLight, input.normal));
 	output += surfaceColor * pLight7.DiffuseColor * diffuseAmount;
 
-	return output;
+	return float4(output.xyz, alpha);
 }

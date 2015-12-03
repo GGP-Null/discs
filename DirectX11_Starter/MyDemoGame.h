@@ -71,6 +71,7 @@ private:
 	Mesh* skyMesh;
 	Material *mat;
 	Material* matWireframe;
+	Material* matTrans;
 
 	CylinderCollider cyl_col;
 

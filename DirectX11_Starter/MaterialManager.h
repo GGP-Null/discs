@@ -11,7 +11,7 @@ namespace MaterialManager
 
 	Material *CloneStandardMaterial();
 
-	Material *GetSingleTransparentMaterial();
+	Material *CloneStandardTransparentMaterial();
 
 	void DestroyAllMaterials();
 };
