@@ -157,6 +157,4 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.targets" Condition="Exists('..\packages\directxtk_desktop_2015.2015.7.29.1\build\native\directxtk_desktop_2015.targets')" />
   </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-  </Target>
 </Project>
