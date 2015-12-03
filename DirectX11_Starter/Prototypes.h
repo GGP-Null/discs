@@ -7,7 +7,7 @@
 
 namespace Prototypes
 {
-	void SetPlayerMaterial(Material *mat);
+	void SetPlayerMaterial(unsigned short playerNum, Material *mat);
 	void SetPlayerMesh(unsigned short playerNum, Mesh *mesh);
 
 	Player *MakePlayer(unsigned short playerNum);

@@ -266,6 +266,8 @@ void MyDemoGame::LoadShaders()
 // --------------------------------------------------------
 void MyDemoGame::CreateObjects()
 {
+	p1mat = MaterialManager::CloneStandardMaterial();
+	p2mat = MaterialManager::CloneStandardMaterial();
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
 	matTrans = MaterialManager::CloneStandardTransparentMaterial();
@@ -273,6 +275,8 @@ void MyDemoGame::CreateObjects()
 	matTrans->transparency = 0.5f;
 	matTransWhite->transparency = 0.5f;
 
+	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/playerOneUV.png", nullptr, &p1mat->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/Textures/playerTwoUV.png", nullptr, &p2mat->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &matTrans->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
@@ -299,7 +303,8 @@ void MyDemoGame::CreateObjects()
 
 	Prototypes::SetPlayerMesh(0, mesh);
 	Prototypes::SetPlayerMesh(1, p2Mesh);
-	Prototypes::SetPlayerMaterial(mat);
+	Prototypes::SetPlayerMaterial(0, p1mat);
+	Prototypes::SetPlayerMaterial(1, p2mat);
 	player = Prototypes::MakePlayer(0);
 	player2 = Prototypes::MakePlayer(1);
 
