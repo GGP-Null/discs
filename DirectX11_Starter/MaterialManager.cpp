@@ -18,7 +18,7 @@ namespace {
 
 void MaterialManager::SetDevice(ID3D11Device *pdevice)
 {
-	::device = pdevice;
+	device = pdevice;
 }
 
 void MaterialManager::SetStandardVertexShader(SimpleVertexShader *shader)
