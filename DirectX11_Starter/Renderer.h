@@ -1,5 +1,6 @@
 #pragma once
 #include <queue>
+#include <functional>
 #include "GameObject.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
@@ -33,6 +34,7 @@ private:
 
 	std::vector<GameObject*> standardBucket;
 	// TODO: make distance function
+	//std::priority_queue<GameObject*, std::vector<GameObject*>, std::equal_to<GameObject*>> transparentBucket;
 	std::priority_queue<GameObject*> transparentBucket;
 
 	void doDraw(GameObject* obj);

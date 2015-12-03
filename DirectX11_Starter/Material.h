@@ -34,9 +34,11 @@ struct Material
 
 	~Material()
 	{
+		/*
 		if (ResourceView) ResourceView->Release();
 		if (SamplerState) SamplerState->Release();
 		if (RasterizerState) RasterizerState->Release();
 		if (BlendState) BlendState->Release();
+		*/
 	}
 };

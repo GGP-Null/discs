@@ -266,10 +266,14 @@ void MyDemoGame::CreateObjects()
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
 	matTrans = MaterialManager::CloneStandardTransparentMaterial();
-	matTrans->transparency = 0.7f;
+	matTransWhite = MaterialManager::CloneStandardTransparentMaterial();
+	matTrans->transparency = 0.5f;
+	matTransWhite->transparency = 0.5f;
 
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &matTrans->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
+	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
@@ -281,8 +285,12 @@ void MyDemoGame::CreateObjects()
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
 	HR(device->CreateSamplerState(&samplerDesc, &matWireframe->SamplerState));
+
+	matTrans->SamplerState = mat->SamplerState;
+	matTransWhite->SamplerState = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
+	matTrans->RasterizerState = transRS;
 	matTrans->RasterizerState = transRS;
 	matWireframe->RasterizerState = wireframeRS;
 
@@ -299,13 +307,14 @@ void MyDemoGame::CreateObjects()
 	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
 	Prototypes::SetArenaMesh(arenaMesh);
+	Prototypes::SetArenaMaterial(mat);
 	Prototypes::SetArenaMaterial(matTrans);
 
 	arena = Prototypes::MakeArena();
 
 	Prototypes::SetPlatformMesh(platformMesh);
-	//Prototypes::SetPlatformMaterial(0, matTrans);
 	Prototypes::SetPlatformMaterial(0, mat);
+	Prototypes::SetPlatformMaterial(0, matTrans);
 	Prototypes::SetPlatformMaterial(1, mat);
 
 	p1Platform = Prototypes::MakePlatform(0);

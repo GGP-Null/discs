@@ -72,6 +72,7 @@ private:
 	Material *mat;
 	Material* matWireframe;
 	Material* matTrans;
+	Material* matTransWhite;
 
 	CylinderCollider cyl_col;
 

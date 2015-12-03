@@ -34,7 +34,7 @@ void GameObject::init()
 /// Gets the translation vector of the object.
 /// </summary>
 /// <returns>the translation vector</returns>
-XMFLOAT3 GameObject::GetTranslation()
+XMFLOAT3 GameObject::GetTranslation() const
 {
 	return translation;
 }
@@ -56,6 +56,11 @@ XMFLOAT3 GameObject::GetRotation()
 XMFLOAT3 GameObject::GetScale()
 {
 	return scale;
+}
+
+float GameObject::GetDistFromCamera() const
+{
+	return distFromCamera;
 }
 
 string const &GameObject::GetDebugName()
@@ -92,6 +97,11 @@ void GameObject::SetScale(XMFLOAT3 s)
 {
 	scale = s;
 	worldMatIsDirty = true;
+}
+
+void GameObject::SetDistFromCamera(float dist)
+{
+	distFromCamera = dist;
 }
 
 void GameObject::SetDebugName(string const& str)

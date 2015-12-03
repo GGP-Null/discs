@@ -8,7 +8,6 @@ using namespace DirectX;
 class TrackingCamera : public Camera
 {
 private:
-	XMFLOAT3 position;
 	XMFLOAT3 forward;
 	GameObject* target;
 	XMFLOAT3 up;
