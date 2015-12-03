@@ -57,7 +57,7 @@ void Disc::Launch(XMFLOAT3 p, XMFLOAT3 r)
 	isActive = true;
 	SetTranslation(p);
 	SetRotation(r);
-	velocity = XMFLOAT3(10 * sin(rotation.y), 0, 10 * cos(rotation.y));
+	velocity = XMFLOAT3(10 * cos(-rotation.y), 0, 10 * sin(-rotation.y));
 	//velocity = XMFLOAT3(5, 0, 10 * cos(rotation.y));
 }
 
