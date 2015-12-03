@@ -36,6 +36,8 @@ using namespace DirectX;
 using namespace Input;
 using Input::GamePad;
 
+#define SCROLL_WHEEL_TO_TRANSPARENCY (0.1f / 120.0f)
+
 
 #pragma region Win32 Entry Point (WinMain)
 // --------------------------------------------------------
@@ -195,6 +197,7 @@ bool MyDemoGame::Init()
 
 	// setup mouse mode
 	Input::SetMouseMode(Input::MouseMode::MODE_RELATIVE);
+	Input::ResetScrollWheel();
 
 	// Successfully initialized
 	return true;
@@ -307,14 +310,12 @@ void MyDemoGame::CreateObjects()
 	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
 	Prototypes::SetArenaMesh(arenaMesh);
-	Prototypes::SetArenaMaterial(mat);
 	Prototypes::SetArenaMaterial(matTrans);
 
 	arena = Prototypes::MakeArena();
 
 	Prototypes::SetPlatformMesh(platformMesh);
 	Prototypes::SetPlatformMaterial(0, mat);
-	Prototypes::SetPlatformMaterial(0, matTrans);
 	Prototypes::SetPlatformMaterial(1, mat);
 
 	p1Platform = Prototypes::MakePlatform(0);
@@ -361,11 +362,23 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		Quit();
 
 	switch (gState) {
-	case GAME:
+	case GAME: {
 		if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
 			EndGame();
-		// shouldn't get here anywho
+
+		int scroll = Input::GetScrollWheel();
+		Input::ResetScrollWheel();
+
+		auto &transparency = arena->GetMaterial()->transparency;
+
+		transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
+
+		transparency = (transparency > 1.0f) ? 1.0f : transparency;
+		transparency = (transparency < 0.0f) ? 0.0f : transparency;
+
 		break;
+	}
+
 
 	case MAIN:
 		if (KeyPressedThisFrame(Keys::Enter) || gamePad.ButtonPressedThisFrame(trackedPadState.start))

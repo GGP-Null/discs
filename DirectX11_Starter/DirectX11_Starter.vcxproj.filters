@@ -203,6 +203,9 @@
     <ClInclude Include="Prototypes.h">
       <Filter>Header Files\GameObjects</Filter>
     </ClInclude>
+    <ClInclude Include="DistanceFromCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
