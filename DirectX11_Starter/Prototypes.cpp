@@ -24,6 +24,7 @@ Player *Prototypes::MakePlayer(unsigned short playerNum)
 	auto player = new Player(playerMeshes[playerNum], playerMaterials[playerNum]);
 
 	player->Scale(XMFLOAT3(.1f, .1f, .1f));
+	player->Rotate(XMFLOAT3(0.0f, -3.1415 / 2.0, 0.0f));
 
 	if (playerNum == 1) player->Translate(XMFLOAT3(0, 0.0, 12.0));
 
