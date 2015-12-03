@@ -153,9 +153,9 @@ bool MyDemoGame::Init()
 
 	D3D11_RASTERIZER_DESC solidDesc;
 	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_SOLID;
-	wireframeDesc.CullMode = D3D11_CULL_FRONT;
-	wireframeDesc.DepthClipEnable = true;
+	solidDesc.FillMode = D3D11_FILL_SOLID;
+	solidDesc.CullMode = D3D11_CULL_BACK;
+	solidDesc.DepthClipEnable = true;
 
 	device->CreateRasterizerState(&solidDesc, &solidRS);
 
@@ -279,6 +279,7 @@ void MyDemoGame::CreateObjects()
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
+	matWireframe->SamplerState = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
 	matTrans->RasterizerState = solidRS;
