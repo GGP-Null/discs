@@ -158,6 +158,7 @@ bool MyDemoGame::Init()
 	solidDesc.DepthClipEnable = true;
 
 	device->CreateRasterizerState(&solidDesc, &solidRS);
+	device->CreateRasterizerState(&solidDesc, &transRS);
 
 	CreateObjects();
 
@@ -279,10 +280,10 @@ void MyDemoGame::CreateObjects()
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
-	matWireframe->SamplerState = mat->SamplerState;
+	HR(device->CreateSamplerState(&samplerDesc, &matWireframe->SamplerState));
 	
 	mat->RasterizerState = solidRS;
-	matTrans->RasterizerState = solidRS;
+	matTrans->RasterizerState = transRS;
 	matWireframe->RasterizerState = wireframeRS;
 
 	Prototypes::SetPlayerMesh(0, mesh);

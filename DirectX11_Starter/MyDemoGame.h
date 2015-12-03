@@ -100,6 +100,7 @@ private:
 
 	ID3D11RasterizerState* wireframeRS;
 	ID3D11RasterizerState* solidRS;
+	ID3D11RasterizerState* transRS;
 
 	// Render states for the sky
 	ID3D11RasterizerState* rsSky;
