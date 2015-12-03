@@ -63,7 +63,6 @@ void Renderer::DrawObject(GameObject* object)
 
 void Renderer::EndFrame()
 {
-	context->OMSetBlendState(nullptr, nullptr, BLEND_STATE_SAMPLE_DEFAULT);
 	for (GameObject *go : standardBucket)
 		doDraw(go);
 	standardBucket.clear();
@@ -74,6 +73,7 @@ void Renderer::EndFrame()
 
 		doDrawTransparent(go);
 	}
+	context->OMSetBlendState(nullptr, nullptr, BLEND_STATE_SAMPLE_DEFAULT);
 }
 
 void Renderer::doDraw(GameObject* obj)

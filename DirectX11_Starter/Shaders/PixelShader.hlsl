@@ -141,5 +141,5 @@ float4 main(VertexToPixel input) : SV_TARGET
 	diffuseAmount = saturate(dot(directionToLight, input.normal));
 	output += surfaceColor * pLight7.DiffuseColor * diffuseAmount;
 
-	return float4(output.xyz, alpha);
+	return float4(output.rgb, alpha);
 }

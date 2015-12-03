@@ -265,7 +265,7 @@ void MyDemoGame::CreateObjects()
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
 	matTrans = MaterialManager::CloneStandardTransparentMaterial();
-	matTrans->transparency = 0.5f;
+	matTrans->transparency = 0.7f;
 
 	HR(CreateWICTextureFromFile(device, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
 	HR(CreateWICTextureFromFile(device, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
@@ -297,13 +297,13 @@ void MyDemoGame::CreateObjects()
 	for (auto &disc : p2discs) disc = Prototypes::MakeDisc(player2);
 
 	Prototypes::SetArenaMesh(arenaMesh);
-	Prototypes::SetArenaMaterial(mat);
+	Prototypes::SetArenaMaterial(matTrans);
 
 	arena = Prototypes::MakeArena();
 
 	Prototypes::SetPlatformMesh(platformMesh);
-	Prototypes::SetPlatformMaterial(0, matTrans);
-	//Prototypes::SetPlatformMaterial(0, mat);
+	//Prototypes::SetPlatformMaterial(0, matTrans);
+	Prototypes::SetPlatformMaterial(0, mat);
 	Prototypes::SetPlatformMaterial(1, mat);
 
 	p1Platform = Prototypes::MakePlatform(0);
