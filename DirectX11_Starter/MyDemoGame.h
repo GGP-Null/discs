@@ -112,4 +112,9 @@ private:
 	ID3D11DepthStencilState* dsSky;
 
 	ID3D11ShaderResourceView* skyTexture;
+
+	//text
+	ID3DXFont *font;
+	RECT fRectangle;
+	std::string message;
 };

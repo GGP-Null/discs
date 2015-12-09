@@ -138,6 +138,17 @@ bool MyDemoGame::Init()
 	if( !DirectXGameCore::Init() )
 		return false;
 
+	font = NULL;
+	HRESULT hr = D3DXCreateFont(gDevice->device, 22, 0, FW_NORMAL, 1, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+		ANTIALIASED_QUALITY, FF_DONTCARE, "Arial", &font);
+	if (!SUCCEEDED(hr))
+	{
+		return false;
+	}
+
+	SetRect(&fRectangle, 0, 0, 500, 44);
+	message = "This is some generic message to\ndisplay on the screen";
+
 	// Helper methods to create something to draw, load shaders to draw it 
 	// with and set up matrices so we can see how to pass data to the GPU.
 	//  - For your own projects, feel free to expand/replace these.
@@ -518,7 +529,7 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		1.0f,
 		0);
 
-	gState = GAME;
+	//gState = GAME;
 	//is the game going
 	if (gState == GAME)
 	{
