@@ -232,6 +232,9 @@ void MyDemoGame::LoadShaders()
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
 
+	glowPixelShader = new SimplePixelShader(device, deviceContext);
+	glowPixelShader->LoadShaderFile(L"GlowPS.cso");
+
 	MaterialManager::SetDevice(device);
 
 	MaterialManager::SetStandardVertexShader(vertexShader);
@@ -267,6 +270,9 @@ void MyDemoGame::LoadShaders()
 void MyDemoGame::CreateObjects()
 {
 	p1mat = MaterialManager::CloneStandardMaterial();
+
+	p1mat->PixelShader = glowPixelShader;
+
 	p2mat = MaterialManager::CloneStandardMaterial();
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
@@ -285,6 +291,8 @@ void MyDemoGame::CreateObjects()
 	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
 	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/discTexture.png", nullptr, &discMat->ResourceView));
 	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/platformTexture.png", nullptr, &platformMat->ResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/playerOneUVGlowMap.png", nullptr, &p1mat->GlowResourceView));
+	
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
