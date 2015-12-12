@@ -175,10 +175,14 @@ void GameObject::Draw(ID3D11DeviceContext* context)
 	if (worldMatIsDirty) updateWorldMatrix();
 
 	material->VertexShader->SetMatrix4x4("world", worldMat);
-	material->VertexShader->CopyAllBufferData();
 
 	material->PixelShader->SetShaderResourceView("diffuseTexture", material->ResourceView);
+	if (material->GlowResourceView)
+		material->PixelShader->SetShaderResourceView("glowMap", material->GlowResourceView);
 	material->PixelShader->SetSamplerState("basicSampler", material->SamplerState);
+
+	material->VertexShader->SetShader(true);
+	material->PixelShader->SetShader(true);
 
 	mesh->Draw(worldMat, context);
 }

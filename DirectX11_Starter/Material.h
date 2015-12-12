@@ -10,6 +10,7 @@ struct Material
 	SimpleVertexShader* VertexShader;
 	SimplePixelShader* PixelShader;
 	ID3D11ShaderResourceView* ResourceView;
+	ID3D11ShaderResourceView* GlowResourceView;
 	ID3D11SamplerState* SamplerState;
 	ID3D11RasterizerState* RasterizerState;
 	ID3D11BlendState* BlendState;
