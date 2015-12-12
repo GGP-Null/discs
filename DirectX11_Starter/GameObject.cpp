@@ -178,7 +178,7 @@ void GameObject::Draw(ID3D11DeviceContext* context)
 
 	material->PixelShader->SetShaderResourceView("diffuseTexture", material->ResourceView);
 	if (material->GlowResourceView)
-	//	material->PixelShader->SetShaderResourceView("glowMap", material->GlowResourceView);
+		material->PixelShader->SetShaderResourceView("glowMap", material->GlowResourceView);
 	material->PixelShader->SetSamplerState("basicSampler", material->SamplerState);
 
 	material->VertexShader->SetShader(true);

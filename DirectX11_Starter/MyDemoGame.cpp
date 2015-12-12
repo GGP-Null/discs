@@ -182,8 +182,8 @@ bool MyDemoGame::Init()
 	};
 
 	LightManager* lm = renderer->GetLightManager();
-	lm->SetDirectionalLight(0, &testLight);
-	lm->SetDirectionalLight(1, &testLight2);
+	//lm->SetDirectionalLight(0, &testLight);
+	//lm->SetDirectionalLight(1, &testLight2);
 	lm->SetAmbientLight(&XMFLOAT4(0.3f, 0, 0, 1));
 
 	lm->UpdateLights(0.1f);
@@ -270,14 +270,20 @@ void MyDemoGame::LoadShaders()
 void MyDemoGame::CreateObjects()
 {
 	p1mat = MaterialManager::CloneStandardMaterial();
-
 	p1mat->PixelShader = glowPixelShader;
 
 	p2mat = MaterialManager::CloneStandardMaterial();
+	p2mat->PixelShader = glowPixelShader;
+
 	mat = MaterialManager::CloneStandardMaterial();
 	matWireframe = MaterialManager::CloneStandardMaterial();
+
 	discMat = MaterialManager::CloneStandardMaterial();
+	discMat->PixelShader = glowPixelShader;
+
 	platformMat = MaterialManager::CloneStandardMaterial();
+	platformMat->PixelShader = glowPixelShader;
+
 	matTrans = MaterialManager::CloneStandardTransparentMaterial();
 	matTransWhite = MaterialManager::CloneStandardTransparentMaterial();
 	matTrans->transparency = 0.5f;
@@ -292,6 +298,9 @@ void MyDemoGame::CreateObjects()
 	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/discTexture.png", nullptr, &discMat->ResourceView));
 	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/platformTexture.png", nullptr, &platformMat->ResourceView));
 	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/playerOneUVGlowMap.png", nullptr, &p1mat->GlowResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/playerTwoUVGlowMap.png", nullptr, &p2mat->GlowResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/discTextureGlowMap.png", nullptr, &discMat->GlowResourceView));
+	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/platformTextureGlowMap.png", nullptr, &platformMat->GlowResourceView));
 	
 
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -420,7 +429,7 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 	//this stuff is here to demonstrate the flow for working with a dynamic point light
 	PointLight pl;
-	pl.DiffuseColor = { 1, 1, 1, 1 };
+	pl.DiffuseColor = { 0.1f, 0.1f, 0.1f, 0.1f };
 	pl.Location = { debugCamera->GetPosition().x, debugCamera->GetPosition().y, debugCamera->GetPosition().z };
 	renderer->GetLightManager()->SetPointLight(0, &pl);
 	//we shouldn't call the next method unless we actually changed the location of the light,
