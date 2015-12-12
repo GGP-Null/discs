@@ -100,6 +100,7 @@ MyDemoGame::~MyDemoGame()
 	//to see if they exist, because in this simplified demo we know that they
 	//will.  Good practice dictates that we should check the existence of
 	//these things before deleting them in the full project.
+	delete post;
 	delete renderer;
 
 	delete debugCamera;
@@ -169,7 +170,10 @@ bool MyDemoGame::Init()
 	useDebugCamera = false;
 
 	//TODO:  set up these lights in the correct places
-	renderer = new Renderer(debugCamera, deviceContext);
+	renderer = new Renderer(debugCamera, device, deviceContext);
+
+	post = new TestPostProcess(device, deviceContext);
+	renderer->SetPostProcess(post, windowWidth, windowHeight, depthStencilView, renderTargetView);
 
 	DirectionalLight testLight = {
 		XMFLOAT4(0.0f, 0.4f, 0.0f, 1.0f),
@@ -350,6 +354,7 @@ void MyDemoGame::CreateObjects()
 
 	p1Platform = Prototypes::MakePlatform(0);
 	p2Platform = Prototypes::MakePlatform(1);
+
 }
 
 #pragma endregion

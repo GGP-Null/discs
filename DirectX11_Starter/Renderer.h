@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "DirectionalLight.h"
 #include "LightManager.h"
+#include "PostProcess.h"
 
 // This class is intended to improve the efficiency of using multiple different
 // shaders, etc. without having the developers worry about the order in which things
@@ -16,11 +17,12 @@
 class Renderer
 {
 public:
-	Renderer(Camera* camera, ID3D11DeviceContext* context);
+	Renderer(Camera* camera, ID3D11Device* dev, ID3D11DeviceContext* context);
 	~Renderer();
 
 	LightManager* GetLightManager();
 	void SetCamera(Camera* camera);
+	void SetPostProcess(PostProcess* post, int windowWidth, int windowHeight, ID3D11DepthStencilView* dsv, ID3D11RenderTargetView* backbuffer);
 
 	void StartFrame();
 	void DrawObject(GameObject* object);
@@ -39,5 +41,12 @@ private:
 
 	void doDraw(GameObject* obj);
 	void doDrawTransparent(GameObject* obj);
+
+	ID3D11Device* device;
+	PostProcess* postProcess;
+	ID3D11RenderTargetView* postRenderTargetView;
+	ID3D11ShaderResourceView* postShaderResourceView;
+	ID3D11DepthStencilView* depthStencilView;
+	ID3D11RenderTargetView* backBuffer;
 };
 

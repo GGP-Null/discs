@@ -17,6 +17,7 @@
 #include "DirectionalLight.h"
 #include "WICTextureLoader.h"
 #include "CylinderCollider.h"
+#include "TestPostProcess.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -113,4 +114,6 @@ private:
 	ID3D11DepthStencilState* dsSky;
 
 	ID3D11ShaderResourceView* skyTexture;
+
+	TestPostProcess* post;
 };
