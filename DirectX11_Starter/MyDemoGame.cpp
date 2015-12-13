@@ -429,7 +429,7 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 	//this stuff is here to demonstrate the flow for working with a dynamic point light
 	PointLight pl;
-	pl.DiffuseColor = { 0.1f, 0.1f, 0.1f, 0.1f };
+	pl.DiffuseColor = { 0.8f, 0.8f, 0.8f, 0.8f };
 	pl.Location = { debugCamera->GetPosition().x, debugCamera->GetPosition().y, debugCamera->GetPosition().z };
 	renderer->GetLightManager()->SetPointLight(0, &pl);
 	//we shouldn't call the next method unless we actually changed the location of the light,

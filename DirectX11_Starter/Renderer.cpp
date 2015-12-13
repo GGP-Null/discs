@@ -83,7 +83,7 @@ void Renderer::doDraw(GameObject* obj)
 	mat.VertexShader->SetShader(false);
 	mat.PixelShader->SetShader(false);
 
-	if (lightsLastUpdated < lm->GetLastUpdated())
+	//if (lightsLastUpdated < lm->GetLastUpdated())
 	{
 		lm->SetLightBufferData(mat.PixelShader);
 		lightsLastUpdated = lm->GetLastUpdated();
@@ -105,7 +105,7 @@ void Renderer::doDrawTransparent(GameObject* obj)
 	mat.VertexShader->SetShader(false);
 	mat.PixelShader->SetShader(false);
 
-	if (lightsLastUpdated < lm->GetLastUpdated())
+	//if (lightsLastUpdated < lm->GetLastUpdated())
 	{
 		lm->SetLightBufferData(mat.PixelShader);
 		lightsLastUpdated = lm->GetLastUpdated();
