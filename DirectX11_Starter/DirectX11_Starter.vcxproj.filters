@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Cameras">
       <UniqueIdentifier>{029a0be4-9d8b-4c75-9e80-3089b425aae2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Post">
+      <UniqueIdentifier>{19b70888-ec4d-43ef-b7e7-6cb1ea5487b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dxerr.cpp">
@@ -116,6 +119,12 @@
     </ClCompile>
     <ClCompile Include="Prototypes.cpp">
       <Filter>Source Files\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcess.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPostProcess.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +215,12 @@
     <ClInclude Include="DistanceFromCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PostProcess.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPostProcess.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -222,6 +237,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\GlowPS.hlsl">
       <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Post\TestPostPS.hlsl">
+      <Filter>Shaders\Post</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Post\PostVS.hlsl">
+      <Filter>Shaders\Post</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -92,10 +92,12 @@
     <ClCompile Include="dxerr.cpp" />
     <ClCompile Include="DirectXGameCore.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Prototypes.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="SimpleShader.cpp" />
+    <ClCompile Include="TestPostProcess.cpp" />
     <ClCompile Include="TrackingCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -122,10 +124,12 @@
     <ClInclude Include="DirectXGameCore.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PostProcess.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Prototypes.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SimpleShader.h" />
+    <ClInclude Include="TestPostProcess.h" />
     <ClInclude Include="TrackingCamera.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
@@ -139,6 +143,16 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.1</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\Post\TestPostPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\Post\PostVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.1</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shaders\SkyPS.hlsl">
