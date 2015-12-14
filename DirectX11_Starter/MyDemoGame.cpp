@@ -30,6 +30,7 @@
 #include "MeshManager.h"
 #include "MaterialManager.h"
 #include "Prototypes.h"
+#include "Globals.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -115,13 +116,8 @@ MyDemoGame::~MyDemoGame()
 	delete skyVS;
 	delete skyPS;
 
-	skyTexture->Release();
-	dsSky->Release();
-	rsSky->Release();
-
 	MeshManager::DestroyAllMeshes();
 
-	//delete wireframeRS;
 }
 
 #pragma endregion
@@ -139,6 +135,9 @@ bool MyDemoGame::Init()
 	if( !DirectXGameCore::Init() )
 		return false;
 
+	Globals::device = device;
+	Globals::deviceContext = deviceContext;
+
 	// Helper methods to create something to draw, load shaders to draw it 
 	// with and set up matrices so we can see how to pass data to the GPU.
 	//  - For your own projects, feel free to expand/replace these.
@@ -146,22 +145,9 @@ bool MyDemoGame::Init()
 	LoadShaders();
 
 	//initialize render states
-	D3D11_RASTERIZER_DESC wireframeDesc;
-	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wireframeDesc.CullMode = D3D11_CULL_NONE;
-	wireframeDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&wireframeDesc, &wireframeRS);
-
-	D3D11_RASTERIZER_DESC solidDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	solidDesc.FillMode = D3D11_FILL_SOLID;
-	solidDesc.CullMode = D3D11_CULL_BACK;
-	solidDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&solidDesc, &solidRS);
-	device->CreateRasterizerState(&solidDesc, &transRS);
+	wireframeRS = MaterialManager::GetWireframeRasterizerState();
+	solidRS = MaterialManager::GetStandardRasterizerState();
+	transRS = solidRS;
 
 	CreateObjects();
 
@@ -212,8 +198,6 @@ bool MyDemoGame::Init()
 // --------------------------------------------------------
 void MyDemoGame::CreateGeometry()
 {
-	MeshManager::SetDevice(device);
-
 	mesh = MeshManager::LoadModel("../Resources/playerOne.obj");
 	p2Mesh = MeshManager::LoadModel("../Resources/playerTwo.obj");
 
@@ -239,8 +223,6 @@ void MyDemoGame::LoadShaders()
 	glowPixelShader = new SimplePixelShader(device, deviceContext);
 	glowPixelShader->LoadShaderFile(L"GlowPS.cso");
 
-	MaterialManager::SetDevice(device);
-
 	MaterialManager::SetStandardVertexShader(vertexShader);
 	MaterialManager::SetStandardPixelShader(pixelShader);
 
@@ -249,23 +231,12 @@ void MyDemoGame::LoadShaders()
 
 	skyPS = new SimplePixelShader(device, deviceContext);
 	skyPS->LoadShaderFile(L"SkyPS.cso");
-	DirectX::CreateDDSTextureFromFile(device, deviceContext, L"../Resources/SunnyCubeMap.dds", 0, &skyTexture);
+	skyTexture = MaterialManager::LoadDDSTextureFromFile(L"../Resources/SunnyCubeMap.dds");
 
-	// Create a rasterizer state for the sky box
-	D3D11_RASTERIZER_DESC rastDesc;
-	ZeroMemory(&rastDesc, sizeof(rastDesc));
-	rastDesc.FillMode = D3D11_FILL_SOLID;
-	rastDesc.CullMode = D3D11_CULL_FRONT;
-	rastDesc.DepthClipEnable = true;
-	device->CreateRasterizerState(&rastDesc, &rsSky);
+	rsSky = MaterialManager::GetSkyboxRasterizerState();
 
 	// A depth state for the sky rendering
-	D3D11_DEPTH_STENCIL_DESC dsDesc;
-	ZeroMemory(&dsDesc, sizeof(dsDesc));
-	dsDesc.DepthEnable = true;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	device->CreateDepthStencilState(&dsDesc, &dsSky);
+	dsSky = MaterialManager::GetSkyboxDepthStencilState();
 }
 
 // --------------------------------------------------------
@@ -293,37 +264,29 @@ void MyDemoGame::CreateObjects()
 	matTrans->transparency = 0.5f;
 	matTransWhite->transparency = 0.5f;
 
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/playerOneUV.png", nullptr, &p1mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/playerTwoUV.png", nullptr, &p2mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/blueGlow.jpg", nullptr, &matTrans->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/discTexture.png", nullptr, &discMat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/platformTexture.png", nullptr, &platformMat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/playerOneUVGlowMap.png", nullptr, &p1mat->GlowResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/playerTwoUVGlowMap.png", nullptr, &p2mat->GlowResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/discTextureGlowMap.png", nullptr, &discMat->GlowResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/platformTextureGlowMap.png", nullptr, &platformMat->GlowResourceView));
-	
+	auto loadtex = MaterialManager::LoadWICTextureFromFile;
 
-	D3D11_SAMPLER_DESC samplerDesc;
-	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
-	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	p1mat->ResourceView           = loadtex(L"../Resources/Textures/playerOneUV.png");
+	p2mat->ResourceView           = loadtex(L"../Resources/Textures/playerTwoUV.png");
+	mat->ResourceView             = loadtex(L"../Resources/blueGlow.jpg");
+	matTrans->ResourceView        = loadtex(L"../Resources/blueGlow.jpg");
+	matWireframe->ResourceView    = loadtex(L"../Resources/white.jpg");
+	matTransWhite->ResourceView   = loadtex(L"../Resources/white.jpg");
+	discMat->ResourceView         = loadtex(L"../Resources/Textures/discTexture.png");
+	platformMat->ResourceView     = loadtex(L"../Resources/Textures/platformTexture.png");
+	p1mat->GlowResourceView       = loadtex(L"../Resources/GlowMaps/playerOneUVGlowMap.png");
+	p2mat->GlowResourceView       = loadtex(L"../Resources/GlowMaps/playerTwoUVGlowMap.png");
+	discMat->GlowResourceView     = loadtex(L"../Resources/GlowMaps/discTextureGlowMap.png");
+	platformMat->GlowResourceView = loadtex(L"../Resources/GlowMaps/platformTextureGlowMap.png");
 
-	HR(device->CreateSamplerState(&samplerDesc, &mat->SamplerState));
-
-	p1mat->SamplerState = mat->SamplerState;
-	p2mat->SamplerState = mat->SamplerState;
-	matWireframe->SamplerState = mat->SamplerState;
-	matTrans->SamplerState = mat->SamplerState;
+	mat->SamplerState           = MaterialManager::GetStandardSamplerState();
+	p1mat->SamplerState         = mat->SamplerState;
+	p2mat->SamplerState         = mat->SamplerState;
+	matWireframe->SamplerState  = mat->SamplerState;
+	matTrans->SamplerState      = mat->SamplerState;
 	matTransWhite->SamplerState = mat->SamplerState;
-	discMat->SamplerState = mat->SamplerState;
-	platformMat->SamplerState = mat->SamplerState;
+	discMat->SamplerState       = mat->SamplerState;
+	platformMat->SamplerState   = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
 	matTrans->RasterizerState = transRS;
@@ -405,8 +368,6 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		Input::ResetScrollWheel();
 
 		if (scroll) {
-			cout << scroll << '\n';
-
 			auto &transparency = arena->GetMaterial()->transparency;
 
 			transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;

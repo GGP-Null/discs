@@ -1,10 +1,12 @@
 #include "MeshManager.h"
 #include <fstream>
 #include <functional>
+#include "Globals.h"
 
 using namespace std;
 using namespace MeshManager;
 using namespace DirectX;
+using Globals::device;
 
 typedef function<XMFLOAT3(XMFLOAT3)> vectorTransformer;
 
@@ -14,16 +16,9 @@ struct meshAndCollider
 	CylinderCollider *collider;
 };
 
-
-ID3D11Device *device;
 unordered_map<string, meshAndCollider> regularModels;
 unordered_map<string, meshAndCollider> invertedModels;
 unordered_map<Mesh*, CylinderCollider*> meshToCollider;
-
-void MeshManager::SetDevice(ID3D11Device *pDevice)
-{
-	device = pDevice;
-}
 
 Mesh *MeshManager::LoadModel(std::string path, bool invertNormals)
 {
