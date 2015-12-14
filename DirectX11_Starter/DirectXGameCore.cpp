@@ -145,13 +145,25 @@ bool DirectXGameCore::InitMainWindow()
 		return false;
 	}
 
+	auto windowStyle =
+#ifdef DEBUG
+		WS_OVERLAPPEDWINDOW;
+#else
+		WS_POPUP;
+#endif
+
+	// Get monitor resolution for window
+	// Thanks, https://stackoverflow.com/questions/8690619/how-to-get-screen-resolution-in-c
+	const HWND desktop = GetDesktopWindow();
+	RECT R;
+	GetWindowRect(desktop, &R);
+
 	// Calculate the aspect ratio now that the width & height are set
 	aspectRatio = (float)windowWidth / windowHeight;
 
 	// We want the specified width and height to be the viewable client
 	// area (not counting borders), so we need to adjust for borders
-	RECT R = { 0, 0, windowWidth, windowHeight };
-	AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
+	AdjustWindowRect(&R, windowStyle, false);
 	int realWidth  = R.right - R.left;
 	int realHeight = R.bottom - R.top;
 
@@ -159,7 +171,7 @@ bool DirectXGameCore::InitMainWindow()
 	hMainWnd = CreateWindow(
 		L"D3DWndClassName", 
 		windowCaption.c_str(), 
-		WS_OVERLAPPEDWINDOW, 
+		windowStyle,
 		CW_USEDEFAULT, 
 		CW_USEDEFAULT, 
 		realWidth,

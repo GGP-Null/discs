@@ -186,7 +186,7 @@ bool MyDemoGame::Init()
 	gState = MAIN;
 
 	// setup mouse mode
-	Input::SetMouseMode(Input::MouseMode::MODE_RELATIVE);
+	Input::SetMouseMode(Input::MouseMode::MODE_ABSOLUTE);
 	Input::ResetScrollWheel();
 
 	// Successfully initialized
@@ -361,6 +361,7 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 	switch (gState) {
 	case GAME: {
+		Input::SetMouseMode(Input::Mouse::MODE_RELATIVE);
 		if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
 			EndGame();
 
@@ -380,10 +381,12 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 
 	case MAIN:
+		Input::SetMouseMode(Input::Mouse::MODE_ABSOLUTE);
 		if (KeyPressedThisFrame(Keys::Enter) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
 			StartGame();
 
 		break;
+
 	}
 
 	FrameUpdateData upData{ deltaTime, totalTime };
