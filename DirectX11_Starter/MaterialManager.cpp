@@ -23,6 +23,8 @@ namespace {
 		*skyboxRastState = nullptr
 		;
 
+	ID3D11DepthStencilState *skyboxDepthStencilState = nullptr;
+
 	// TODO: there's probably a better way of storing these
 	// TODO: is there tho
 	std::vector<Material *> materials;
@@ -105,6 +107,8 @@ void MaterialManager::DestroyAllMaterials()
 	if (standardTransparency) standardTransparency->Release();
 	if (standardRastState) standardRastState->Release();
 	if (wireframeRastState) wireframeRastState->Release();
+	if (skyboxRastState) skyboxRastState->Release();
+	if (skyboxDepthStencilState) skyboxDepthStencilState->Release();
 }
 
 ID3D11ShaderResourceView *MaterialManager::LoadTextureFromFile(const wstring &path)
@@ -178,4 +182,19 @@ ID3D11RasterizerState *MaterialManager::GetSkyboxRasterizerState()
 	device->CreateRasterizerState(&rastDesc, &skyboxRastState);
 
 	return skyboxRastState;
+}
+
+ID3D11DepthStencilState *MaterialManager::GetSkyboxDepthStencilState()
+{
+	if (skyboxDepthStencilState) return skyboxDepthStencilState;
+
+	D3D11_DEPTH_STENCIL_DESC dsDesc;
+	ZeroMemory(&dsDesc, sizeof(dsDesc));
+	dsDesc.DepthEnable = true;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	device->CreateDepthStencilState(&dsDesc, &skyboxDepthStencilState);
+
+	return skyboxDepthStencilState;
 }

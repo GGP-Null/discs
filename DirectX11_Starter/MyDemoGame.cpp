@@ -116,9 +116,7 @@ MyDemoGame::~MyDemoGame()
 	delete skyVS;
 	delete skyPS;
 
-	skyTexture->Release();
 	dsSky->Release();
-	rsSky->Release();
 
 	MeshManager::DestroyAllMeshes();
 
@@ -241,12 +239,7 @@ void MyDemoGame::LoadShaders()
 	rsSky = MaterialManager::GetSkyboxRasterizerState();
 
 	// A depth state for the sky rendering
-	D3D11_DEPTH_STENCIL_DESC dsDesc;
-	ZeroMemory(&dsDesc, sizeof(dsDesc));
-	dsDesc.DepthEnable = true;
-	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	device->CreateDepthStencilState(&dsDesc, &dsSky);
+	dsSky = MaterialManager::GetSkyboxDepthStencilState();
 }
 
 // --------------------------------------------------------
