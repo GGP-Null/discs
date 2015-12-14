@@ -15,6 +15,7 @@ namespace {
 	SimplePixelShader *pixShader;
 
 	ID3D11BlendState *standardTransparency = nullptr;
+	ID3D11SamplerState *standardSampler = nullptr;
 
 	// TODO: there's probably a better way of storing these
 	// TODO: is there tho
@@ -92,6 +93,9 @@ void MaterialManager::DestroyAllMaterials()
 
 	for (auto tex : textures) tex.second->Release();
 
+	if (standardSampler) standardSampler->Release();
+	if (standardTransparency) standardTransparency->Release();
+
 	materials.clear();
 }
 
@@ -105,4 +109,21 @@ ID3D11ShaderResourceView *MaterialManager::LoadTextureFromFile(const wstring &pa
 	textures.emplace(path, ptr);
 
 	return ptr;
+}
+
+ID3D11SamplerState *MaterialManager::GetStandardSamplerState()
+{
+	if (standardSampler) return standardSampler;
+
+	D3D11_SAMPLER_DESC samplerDesc;
+	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	HR(device->CreateSamplerState(&samplerDesc, &standardSampler));
+
+	return standardSampler;
 }

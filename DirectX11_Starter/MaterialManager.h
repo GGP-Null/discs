@@ -10,6 +10,8 @@ namespace MaterialManager
 
 	ID3D11ShaderResourceView *LoadTextureFromFile(const std::wstring &path);
 
+	ID3D11SamplerState *GetStandardSamplerState();
+
 	Material *CloneStandardMaterial();
 
 	Material *CloneStandardTransparentMaterial();
