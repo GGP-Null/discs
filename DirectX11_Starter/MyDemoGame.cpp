@@ -293,27 +293,29 @@ void MyDemoGame::CreateObjects()
 	matTrans->transparency = 0.5f;
 	matTransWhite->transparency = 0.5f;
 
-	p1mat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/playerOneUV.png");
-	p2mat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/playerTwoUV.png");
-	mat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/blueGlow.jpg");
-	matTrans->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/blueGlow.jpg");
-	matWireframe->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/white.jpg");
-	matTransWhite->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/white.jpg");
-	discMat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/discTexture.png");
-	platformMat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/platformTexture.png");
-	p1mat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/playerOneUVGlowMap.png");
-	p2mat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/playerTwoUVGlowMap.png");
-	discMat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/discTextureGlowMap.png");
-	platformMat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/platformTextureGlowMap.png");
+	auto loadtex = MaterialManager::LoadTextureFromFile;
 
-	mat->SamplerState = MaterialManager::GetStandardSamplerState();
-	p1mat->SamplerState = mat->SamplerState;
-	p2mat->SamplerState = mat->SamplerState;
-	matWireframe->SamplerState = mat->SamplerState;
-	matTrans->SamplerState = mat->SamplerState;
+	p1mat->ResourceView           = loadtex(L"../Resources/Textures/playerOneUV.png");
+	p2mat->ResourceView           = loadtex(L"../Resources/Textures/playerTwoUV.png");
+	mat->ResourceView             = loadtex(L"../Resources/blueGlow.jpg");
+	matTrans->ResourceView        = loadtex(L"../Resources/blueGlow.jpg");
+	matWireframe->ResourceView    = loadtex(L"../Resources/white.jpg");
+	matTransWhite->ResourceView   = loadtex(L"../Resources/white.jpg");
+	discMat->ResourceView         = loadtex(L"../Resources/Textures/discTexture.png");
+	platformMat->ResourceView     = loadtex(L"../Resources/Textures/platformTexture.png");
+	p1mat->GlowResourceView       = loadtex(L"../Resources/GlowMaps/playerOneUVGlowMap.png");
+	p2mat->GlowResourceView       = loadtex(L"../Resources/GlowMaps/playerTwoUVGlowMap.png");
+	discMat->GlowResourceView     = loadtex(L"../Resources/GlowMaps/discTextureGlowMap.png");
+	platformMat->GlowResourceView = loadtex(L"../Resources/GlowMaps/platformTextureGlowMap.png");
+
+	mat->SamplerState           = MaterialManager::GetStandardSamplerState();
+	p1mat->SamplerState         = mat->SamplerState;
+	p2mat->SamplerState         = mat->SamplerState;
+	matWireframe->SamplerState  = mat->SamplerState;
+	matTrans->SamplerState      = mat->SamplerState;
 	matTransWhite->SamplerState = mat->SamplerState;
-	discMat->SamplerState = mat->SamplerState;
-	platformMat->SamplerState = mat->SamplerState;
+	discMat->SamplerState       = mat->SamplerState;
+	platformMat->SamplerState   = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
 	matTrans->RasterizerState = transRS;
@@ -395,8 +397,6 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		Input::ResetScrollWheel();
 
 		if (scroll) {
-			cout << scroll << '\n';
-
 			auto &transparency = arena->GetMaterial()->transparency;
 
 			transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
