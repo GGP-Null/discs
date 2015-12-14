@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include "WICTextureLoader.h"
+#include "DDSTextureLoader.h"
 #include "hr.h"
 #include "Globals.h"
 
@@ -29,7 +30,8 @@ namespace {
 	// TODO: is there tho
 	std::vector<Material *> materials;
 
-	unordered_map<wstring, ID3D11ShaderResourceView*> textures;
+	unordered_map<wstring, ID3D11ShaderResourceView*> wicTextures;
+	unordered_map<wstring, ID3D11ShaderResourceView*> ddsTextures;
 }
 
 
@@ -100,8 +102,8 @@ void MaterialManager::DestroyAllMaterials()
 	for (auto mat : materials) delete mat;
 	materials.clear();
 
-	for (auto tex : textures) tex.second->Release();
-	textures.clear();
+	for (auto tex : wicTextures) tex.second->Release();
+	wicTextures.clear();
 
 	if (standardSampler) standardSampler->Release();
 	if (standardTransparency) standardTransparency->Release();
@@ -111,14 +113,26 @@ void MaterialManager::DestroyAllMaterials()
 	if (skyboxDepthStencilState) skyboxDepthStencilState->Release();
 }
 
-ID3D11ShaderResourceView *MaterialManager::LoadTextureFromFile(const wstring &path)
+ID3D11ShaderResourceView *MaterialManager::LoadWICTextureFromFile(const wstring &path)
 {
-	auto srv = textures.find(path);
-	if (srv != textures.end()) return srv->second;
+	auto srv = wicTextures.find(path);
+	if (srv != wicTextures.end()) return srv->second;
 
 	ID3D11ShaderResourceView *ptr;
 	HR(CreateWICTextureFromFile(device, deviceContext, path.data(), nullptr, &ptr));
-	textures.emplace(path, ptr);
+	wicTextures.emplace(path, ptr);
+
+	return ptr;
+}
+
+ID3D11ShaderResourceView *MaterialManager::LoadDDSTextureFromFile(const wstring &path)
+{
+	auto srv = ddsTextures.find(path);
+	if (srv != ddsTextures.end()) return srv->second;
+
+	ID3D11ShaderResourceView *ptr;
+	HR(CreateDDSTextureFromFile(device, deviceContext, path.data(), 0, &ptr));
+	ddsTextures.emplace(path, ptr);
 
 	return ptr;
 }

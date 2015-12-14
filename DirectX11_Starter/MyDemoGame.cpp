@@ -234,7 +234,7 @@ void MyDemoGame::LoadShaders()
 
 	skyPS = new SimplePixelShader(device, deviceContext);
 	skyPS->LoadShaderFile(L"SkyPS.cso");
-	DirectX::CreateDDSTextureFromFile(device, deviceContext, L"../Resources/SunnyCubeMap.dds", 0, &skyTexture);
+	skyTexture = MaterialManager::LoadDDSTextureFromFile(L"../Resources/SunnyCubeMap.dds");
 
 	rsSky = MaterialManager::GetSkyboxRasterizerState();
 
@@ -267,7 +267,7 @@ void MyDemoGame::CreateObjects()
 	matTrans->transparency = 0.5f;
 	matTransWhite->transparency = 0.5f;
 
-	auto loadtex = MaterialManager::LoadTextureFromFile;
+	auto loadtex = MaterialManager::LoadWICTextureFromFile;
 
 	p1mat->ResourceView           = loadtex(L"../Resources/Textures/playerOneUV.png");
 	p2mat->ResourceView           = loadtex(L"../Resources/Textures/playerTwoUV.png");

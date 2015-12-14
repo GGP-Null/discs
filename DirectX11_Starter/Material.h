@@ -32,13 +32,4 @@ struct Material
 	{
 		return BlendState;
 	}
-
-	~Material()
-	{
-		/*
-		if (SamplerState) SamplerState->Release();
-		if (RasterizerState) RasterizerState->Release();
-		if (BlendState) BlendState->Release();
-		*/
-	}
 };

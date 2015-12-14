@@ -8,7 +8,8 @@ namespace MaterialManager
 	void SetStandardVertexShader(SimpleVertexShader *shader);
 	void SetStandardPixelShader(SimplePixelShader *shader);
 
-	ID3D11ShaderResourceView *LoadTextureFromFile(const std::wstring &path);
+	ID3D11ShaderResourceView *LoadWICTextureFromFile(const std::wstring &path);
+	ID3D11ShaderResourceView *LoadDDSTextureFromFile(const std::wstring &path);
 
 	ID3D11SamplerState *GetStandardSamplerState();
 
