@@ -74,6 +74,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="CylinderColliderComponent.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="CylinderCollider.cpp" />
@@ -102,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="CylinderColliderComponent.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="CylinderCollider.h" />
@@ -174,6 +176,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="myfile.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

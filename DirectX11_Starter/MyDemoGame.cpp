@@ -165,6 +165,10 @@ bool MyDemoGame::Init()
 
 	CreateObjects();
 
+	//text
+	m_font.reset(new SpriteFont(device, L"myfile.spritefont"));
+	m_spriteBatch.reset(new SpriteBatch(deviceContext));
+
 	debugCamera = new DebugCamera(XMFLOAT3(0, 0, -5), XMFLOAT3(0, 0, 1), aspectRatio);
 	trackingCamera = new TrackingCamera(XMFLOAT3(0, 2, -7), XMFLOAT3(0, 0, 1), player, XMFLOAT3(0, 1, 0), .3f, aspectRatio);
 	useDebugCamera = false;
@@ -404,13 +408,16 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		int scroll = Input::GetScrollWheel();
 		Input::ResetScrollWheel();
 
-		auto &transparency = arena->GetMaterial()->transparency;
+		if (scroll) {
+			cout << scroll << '\n';
 
-		transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
+			auto &transparency = arena->GetMaterial()->transparency;
 
-		transparency = (transparency > 1.0f) ? 1.0f : transparency;
-		transparency = (transparency < 0.0f) ? 0.0f : transparency;
+			transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
 
+			transparency = (transparency > 1.0f) ? 1.0f : transparency;
+			transparency = (transparency < 0.0f) ? 0.0f : transparency;
+		}
 		break;
 	}
 
@@ -586,6 +593,19 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	}
 
 	renderer->EndFrame();
+
+	m_spriteBatch->Begin();
+
+	const wchar_t* output = L"Hello World";
+	XMFLOAT2 midScreen = XMFLOAT2(windowWidth / 2, windowHeight / 2);
+	XMVECTOR m_fontPos = XMLoadFloat2(&midScreen);
+	XMVECTOR origin = m_font->MeasureString(output) / 2.f;
+
+	m_font->DrawString(m_spriteBatch.get(), output,
+		m_fontPos, Colors::White, 0.f, origin);
+
+	m_spriteBatch->End();
+
 	// Present the buffer
 	//  - Puts the image we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME
