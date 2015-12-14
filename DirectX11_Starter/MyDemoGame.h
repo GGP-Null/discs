@@ -19,6 +19,7 @@
 #include "CylinderCollider.h"
 #include "TestPostProcess.h"
 #include "Console.h"
+#include "BloomPost.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -118,5 +119,5 @@ private:
 
 	ID3D11ShaderResourceView* skyTexture;
 
-	TestPostProcess* post;
+	BloomPost* post;
 };
