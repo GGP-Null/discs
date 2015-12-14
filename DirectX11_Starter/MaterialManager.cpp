@@ -17,7 +17,11 @@ namespace {
 	ID3D11BlendState *standardTransparency = nullptr;
 	ID3D11SamplerState *standardSampler = nullptr;
 
-	ID3D11RasterizerState *standardRastState = nullptr, *wireframeRastState = nullptr;
+	ID3D11RasterizerState 
+		*standardRastState = nullptr,
+		*wireframeRastState = nullptr,
+		*skyboxRastState = nullptr
+		;
 
 	// TODO: there's probably a better way of storing these
 	// TODO: is there tho
@@ -160,4 +164,18 @@ ID3D11RasterizerState *MaterialManager::GetWireframeRasterizerState()
 	device->CreateRasterizerState(&wireframeDesc, &wireframeRastState);
 
 	return wireframeRastState;
+}
+
+ID3D11RasterizerState *MaterialManager::GetSkyboxRasterizerState()
+{
+	if (skyboxRastState) return skyboxRastState;
+
+	D3D11_RASTERIZER_DESC rastDesc;
+	ZeroMemory(&rastDesc, sizeof(rastDesc));
+	rastDesc.FillMode = D3D11_FILL_SOLID;
+	rastDesc.CullMode = D3D11_CULL_FRONT;
+	rastDesc.DepthClipEnable = true;
+	device->CreateRasterizerState(&rastDesc, &skyboxRastState);
+
+	return skyboxRastState;
 }

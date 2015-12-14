@@ -14,6 +14,8 @@ namespace MaterialManager
 
 	ID3D11RasterizerState *GetStandardRasterizerState();
 	ID3D11RasterizerState *GetWireframeRasterizerState();
+	ID3D11RasterizerState *GetSkyboxRasterizerState();
+
 
 	Material *CloneStandardMaterial();
 

@@ -238,13 +238,7 @@ void MyDemoGame::LoadShaders()
 	skyPS->LoadShaderFile(L"SkyPS.cso");
 	DirectX::CreateDDSTextureFromFile(device, deviceContext, L"../Resources/SunnyCubeMap.dds", 0, &skyTexture);
 
-	// Create a rasterizer state for the sky box
-	D3D11_RASTERIZER_DESC rastDesc;
-	ZeroMemory(&rastDesc, sizeof(rastDesc));
-	rastDesc.FillMode = D3D11_FILL_SOLID;
-	rastDesc.CullMode = D3D11_CULL_FRONT;
-	rastDesc.DepthClipEnable = true;
-	device->CreateRasterizerState(&rastDesc, &rsSky);
+	rsSky = MaterialManager::GetSkyboxRasterizerState();
 
 	// A depth state for the sky rendering
 	D3D11_DEPTH_STENCIL_DESC dsDesc;
