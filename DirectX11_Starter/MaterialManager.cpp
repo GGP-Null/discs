@@ -105,6 +105,9 @@ void MaterialManager::DestroyAllMaterials()
 	for (auto tex : wicTextures) tex.second->Release();
 	wicTextures.clear();
 
+	for (auto tex : ddsTextures) tex.second->Release();
+	ddsTextures.clear();
+
 	if (standardSampler) standardSampler->Release();
 	if (standardTransparency) standardTransparency->Release();
 	if (standardRastState) standardRastState->Release();

@@ -116,8 +116,6 @@ MyDemoGame::~MyDemoGame()
 	delete skyVS;
 	delete skyPS;
 
-	dsSky->Release();
-
 	MeshManager::DestroyAllMeshes();
 
 	//delete wireframeRS;
