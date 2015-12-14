@@ -118,7 +118,6 @@ MyDemoGame::~MyDemoGame()
 
 	MeshManager::DestroyAllMeshes();
 
-	//delete wireframeRS;
 }
 
 #pragma endregion
