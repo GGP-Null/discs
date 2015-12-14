@@ -1,25 +1,28 @@
 #include "MaterialManager.h"
 #include <vector>
+#include <unordered_map>
+#include "WICTextureLoader.h"
+#include "hr.h"
+#include "Globals.h"
+
+using namespace std;
+using namespace DirectX;
+using Globals::device;
+using Globals::deviceContext;
 
 namespace {
-
 	SimpleVertexShader *vertShader;
 	SimplePixelShader *pixShader;
-
-	ID3D11Device *device;
 
 	ID3D11BlendState *standardTransparency = nullptr;
 
 	// TODO: there's probably a better way of storing these
 	// TODO: is there tho
 	std::vector<Material *> materials;
+
+	unordered_map<wstring, ID3D11ShaderResourceView*> textures;
 }
 
-
-void MaterialManager::SetDevice(ID3D11Device *pdevice)
-{
-	device = pdevice;
-}
 
 void MaterialManager::SetStandardVertexShader(SimpleVertexShader *shader)
 {
@@ -87,5 +90,19 @@ void MaterialManager::DestroyAllMaterials()
 {
 	for (auto mat : materials) delete mat;
 
+	for (auto tex : textures) tex.second->Release();
+
 	materials.clear();
+}
+
+ID3D11ShaderResourceView *MaterialManager::LoadTextureFromFile(const wstring &path)
+{
+	auto srv = textures.find(path);
+	if (srv != textures.end()) return srv->second;
+
+	ID3D11ShaderResourceView *ptr;
+	HR(CreateWICTextureFromFile(device, deviceContext, path.data(), nullptr, &ptr));
+	textures.emplace(path, ptr);
+
+	return ptr;
 }

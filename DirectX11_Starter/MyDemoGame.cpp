@@ -30,6 +30,7 @@
 #include "MeshManager.h"
 #include "MaterialManager.h"
 #include "Prototypes.h"
+#include "Globals.h"
 
 // For the DirectX Math library
 using namespace DirectX;
@@ -139,6 +140,9 @@ bool MyDemoGame::Init()
 	if( !DirectXGameCore::Init() )
 		return false;
 
+	Globals::device = device;
+	Globals::deviceContext = deviceContext;
+
 	// Helper methods to create something to draw, load shaders to draw it 
 	// with and set up matrices so we can see how to pass data to the GPU.
 	//  - For your own projects, feel free to expand/replace these.
@@ -212,8 +216,6 @@ bool MyDemoGame::Init()
 // --------------------------------------------------------
 void MyDemoGame::CreateGeometry()
 {
-	MeshManager::SetDevice(device);
-
 	mesh = MeshManager::LoadModel("../Resources/playerOne.obj");
 	p2Mesh = MeshManager::LoadModel("../Resources/playerTwo.obj");
 
@@ -238,8 +240,6 @@ void MyDemoGame::LoadShaders()
 
 	glowPixelShader = new SimplePixelShader(device, deviceContext);
 	glowPixelShader->LoadShaderFile(L"GlowPS.cso");
-
-	MaterialManager::SetDevice(device);
 
 	MaterialManager::SetStandardVertexShader(vertexShader);
 	MaterialManager::SetStandardPixelShader(pixelShader);
@@ -293,19 +293,18 @@ void MyDemoGame::CreateObjects()
 	matTrans->transparency = 0.5f;
 	matTransWhite->transparency = 0.5f;
 
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/playerOneUV.png", nullptr, &p1mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/playerTwoUV.png", nullptr, &p2mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/blueGlow.jpg", nullptr, &mat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/blueGlow.jpg", nullptr, &matTrans->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/white.jpg", nullptr, &matWireframe->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/white.jpg", nullptr, &matTransWhite->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/discTexture.png", nullptr, &discMat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/Textures/platformTexture.png", nullptr, &platformMat->ResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/playerOneUVGlowMap.png", nullptr, &p1mat->GlowResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/playerTwoUVGlowMap.png", nullptr, &p2mat->GlowResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/discTextureGlowMap.png", nullptr, &discMat->GlowResourceView));
-	HR(CreateWICTextureFromFile(device, deviceContext, L"../Resources/GlowMaps/platformTextureGlowMap.png", nullptr, &platformMat->GlowResourceView));
-	
+	p1mat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/playerOneUV.png");
+	p2mat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/playerTwoUV.png");
+	mat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/blueGlow.jpg");
+	matTrans->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/blueGlow.jpg");
+	matWireframe->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/white.jpg");
+	matTransWhite->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/white.jpg");
+	discMat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/discTexture.png");
+	platformMat->ResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/Textures/platformTexture.png");
+	p1mat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/playerOneUVGlowMap.png");
+	p2mat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/playerTwoUVGlowMap.png");
+	discMat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/discTextureGlowMap.png");
+	platformMat->GlowResourceView = MaterialManager::LoadTextureFromFile(L"../Resources/GlowMaps/platformTextureGlowMap.png");
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	ZeroMemory(&samplerDesc, sizeof(D3D11_SAMPLER_DESC));

@@ -1,13 +1,14 @@
 #pragma once
+#include <string>
 #include "SimpleShader.h"
 #include "Material.h"
 
 namespace MaterialManager
 {
-	void SetDevice(ID3D11Device *context);
-
 	void SetStandardVertexShader(SimpleVertexShader *shader);
 	void SetStandardPixelShader(SimplePixelShader *shader);
+
+	ID3D11ShaderResourceView *LoadTextureFromFile(const std::wstring &path);
 
 	Material *CloneStandardMaterial();
 
