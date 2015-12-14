@@ -18,6 +18,7 @@
 #include "WICTextureLoader.h"
 #include "CylinderCollider.h"
 #include "TestPostProcess.h"
+#include "Console.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -63,6 +64,8 @@ private:
 	void CreateObjects();
 	void StartGame();
 	void EndGame();
+
+	Console console;
 
 	Mesh *mesh;
 	Mesh* p2Mesh;
