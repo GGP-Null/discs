@@ -12,6 +12,9 @@ namespace MaterialManager
 
 	ID3D11SamplerState *GetStandardSamplerState();
 
+	ID3D11RasterizerState *GetStandardRasterizerState();
+	ID3D11RasterizerState *GetWireframeRasterizerState();
+
 	Material *CloneStandardMaterial();
 
 	Material *CloneStandardTransparentMaterial();

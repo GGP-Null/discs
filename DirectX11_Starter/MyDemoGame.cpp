@@ -150,22 +150,9 @@ bool MyDemoGame::Init()
 	LoadShaders();
 
 	//initialize render states
-	D3D11_RASTERIZER_DESC wireframeDesc;
-	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
-	wireframeDesc.CullMode = D3D11_CULL_NONE;
-	wireframeDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&wireframeDesc, &wireframeRS);
-
-	D3D11_RASTERIZER_DESC solidDesc;
-	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
-	solidDesc.FillMode = D3D11_FILL_SOLID;
-	solidDesc.CullMode = D3D11_CULL_BACK;
-	solidDesc.DepthClipEnable = true;
-
-	device->CreateRasterizerState(&solidDesc, &solidRS);
-	device->CreateRasterizerState(&solidDesc, &transRS);
+	wireframeRS = MaterialManager::GetWireframeRasterizerState();
+	solidRS = MaterialManager::GetStandardRasterizerState();
+	transRS = solidRS;
 
 	CreateObjects();
 

@@ -17,6 +17,8 @@ namespace {
 	ID3D11BlendState *standardTransparency = nullptr;
 	ID3D11SamplerState *standardSampler = nullptr;
 
+	ID3D11RasterizerState *standardRastState = nullptr, *wireframeRastState = nullptr;
+
 	// TODO: there's probably a better way of storing these
 	// TODO: is there tho
 	std::vector<Material *> materials;
@@ -90,13 +92,15 @@ Material *MaterialManager::CloneStandardTransparentMaterial()
 void MaterialManager::DestroyAllMaterials()
 {
 	for (auto mat : materials) delete mat;
+	materials.clear();
 
 	for (auto tex : textures) tex.second->Release();
+	textures.clear();
 
 	if (standardSampler) standardSampler->Release();
 	if (standardTransparency) standardTransparency->Release();
-
-	materials.clear();
+	if (standardRastState) standardRastState->Release();
+	if (wireframeRastState) wireframeRastState->Release();
 }
 
 ID3D11ShaderResourceView *MaterialManager::LoadTextureFromFile(const wstring &path)
@@ -126,4 +130,34 @@ ID3D11SamplerState *MaterialManager::GetStandardSamplerState()
 	HR(device->CreateSamplerState(&samplerDesc, &standardSampler));
 
 	return standardSampler;
+}
+
+ID3D11RasterizerState *MaterialManager::GetStandardRasterizerState()
+{
+	if (standardRastState) return standardRastState;
+
+	D3D11_RASTERIZER_DESC solidDesc;
+	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidDesc.FillMode = D3D11_FILL_SOLID;
+	solidDesc.CullMode = D3D11_CULL_BACK;
+	solidDesc.DepthClipEnable = true;
+
+	HR(device->CreateRasterizerState(&solidDesc, &standardRastState));
+
+	return standardRastState;
+}
+
+ID3D11RasterizerState *MaterialManager::GetWireframeRasterizerState()
+{
+	if (wireframeRastState) return wireframeRastState;
+
+	D3D11_RASTERIZER_DESC wireframeDesc;
+	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireframeDesc.CullMode = D3D11_CULL_NONE;
+	wireframeDesc.DepthClipEnable = true;
+
+	device->CreateRasterizerState(&wireframeDesc, &wireframeRastState);
+
+	return wireframeRastState;
 }
