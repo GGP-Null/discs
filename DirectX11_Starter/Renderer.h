@@ -6,6 +6,7 @@
 #include "DirectionalLight.h"
 #include "LightManager.h"
 #include "PostProcess.h"
+#include "Skybox.h"
 
 // This class is intended to improve the efficiency of using multiple different
 // shaders, etc. without having the developers worry about the order in which things
@@ -26,7 +27,7 @@ public:
 
 	void StartFrame();
 	void DrawObject(GameObject* object);
-	void EndFrame();
+	void EndFrame(Skybox* sky);
 private:
 	Camera* camera;
 	ID3D11DeviceContext* context;
@@ -39,6 +40,7 @@ private:
 	//std::priority_queue<GameObject*, std::vector<GameObject*>, std::equal_to<GameObject*>> transparentBucket;
 	std::priority_queue<GameObject*> transparentBucket;
 
+	void drawSky(Skybox* sky);
 	void doDraw(GameObject* obj);
 	void doDrawTransparent(GameObject* obj);
 

@@ -113,7 +113,7 @@ void Renderer::DrawObject(GameObject* object)
 		standardBucket.push_back(object);
 }
 
-void Renderer::EndFrame()
+void Renderer::EndFrame(Skybox* sky)
 {
 	if (postProcess != nullptr)
 	{
@@ -127,6 +127,8 @@ void Renderer::EndFrame()
 			1.0f,
 			0);
 	}
+
+	drawSky(sky);
 
 	for (GameObject *go : standardBucket)
 		doDraw(go);
@@ -144,6 +146,32 @@ void Renderer::EndFrame()
 	{
 		postProcess->Do(postShaderResourceView, backBuffer);
 	}
+}
+
+void Renderer::drawSky(Skybox* sky)
+{
+	// Now that solid "stuff" is drawn, draw the sky
+	UINT stride = sizeof(Vertex);
+	UINT offset = 0;
+	ID3D11Buffer* skyVB = sky->skyMesh->GetVertexBuffer();
+	ID3D11Buffer* skyIB = sky->skyMesh->GetIndexBuffer();
+	context->IASetVertexBuffers(0, 1, &skyVB, &stride, &offset);
+	context->IASetIndexBuffer(skyIB, DXGI_FORMAT_R32_UINT, 0);
+
+	sky->skyVS->SetShader();
+
+	sky->skyPS->SetShaderResourceView("sky", sky->skyTexture);
+	//SUPER ugly fix.  I wish we had another reference to this
+	sky->skyPS->SetSamplerState("trilinear", MaterialManager::GetStandardSamplerState());
+	sky->skyPS->SetShader();
+
+	context->RSSetState(sky->rsSky);
+	context->OMSetDepthStencilState(sky->dsSky, 0);
+	context->DrawIndexed(sky->skyMesh->GetIndexCount(), 0, 0);
+
+	// Reset the states to their defaults
+	context->RSSetState(0);
+	context->OMSetDepthStencilState(0, 0);
 }
 
 void Renderer::doDraw(GameObject* obj)

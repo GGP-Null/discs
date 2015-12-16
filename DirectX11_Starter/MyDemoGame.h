@@ -19,6 +19,7 @@
 #include "CylinderCollider.h"
 #include "TestPostProcess.h"
 #include "Console.h"
+#include "Skybox.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -72,7 +73,6 @@ private:
 	Mesh* discMesh;
 	Mesh* platformMesh;
 	Mesh *arenaMesh;
-	Mesh* skyMesh;
 	Material *p1mat;
 	Material *p2mat;
 	Material *mat;
@@ -93,6 +93,8 @@ private:
 	GameObject* p1Platform;
 	GameObject* p2Platform;
 
+	Skybox* sky;
+
 	DebugCamera* debugCamera;
 	TrackingCamera* trackingCamera;
 	bool useDebugCamera;
@@ -105,18 +107,10 @@ private:
 	SimpleVertexShader* vertexShader;
 	SimplePixelShader* pixelShader;
 	SimplePixelShader* glowPixelShader;
-	SimpleVertexShader* skyVS;
-	SimplePixelShader* skyPS;
 
 	ID3D11RasterizerState* wireframeRS;
 	ID3D11RasterizerState* solidRS;
 	ID3D11RasterizerState* transRS;
-
-	// Render states for the sky
-	ID3D11RasterizerState* rsSky;
-	ID3D11DepthStencilState* dsSky;
-
-	ID3D11ShaderResourceView* skyTexture;
 
 	TestPostProcess* post;
 };

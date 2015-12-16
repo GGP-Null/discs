@@ -113,8 +113,8 @@ MyDemoGame::~MyDemoGame()
 
 	delete vertexShader;
 	delete pixelShader;
-	delete skyVS;
-	delete skyPS;
+
+	delete sky;
 
 	MeshManager::DestroyAllMeshes();
 
@@ -149,6 +149,7 @@ bool MyDemoGame::Init()
 	solidRS = MaterialManager::GetStandardRasterizerState();
 	transRS = solidRS;
 
+	sky = new Skybox(device, deviceContext);
 	CreateObjects();
 
 	debugCamera = new DebugCamera(XMFLOAT3(0, 0, -5), XMFLOAT3(0, 0, 1), aspectRatio);
@@ -202,7 +203,6 @@ void MyDemoGame::CreateGeometry()
 	p2Mesh = MeshManager::LoadModel("../Resources/playerTwo.obj");
 
 	arenaMesh = MeshManager::LoadModel("../Resources/cube.obj", true);
-	skyMesh = MeshManager::LoadModel("../Resources/cube.obj");
 
 	discMesh = MeshManager::LoadModel("../Resources/dotDisc.obj");
 	platformMesh = MeshManager::LoadModel("../Resources/dotPlatform.obj");
@@ -225,18 +225,6 @@ void MyDemoGame::LoadShaders()
 
 	MaterialManager::SetStandardVertexShader(vertexShader);
 	MaterialManager::SetStandardPixelShader(pixelShader);
-
-	skyVS = new SimpleVertexShader(device, deviceContext);
-	skyVS->LoadShaderFile(L"SkyVS.cso");
-
-	skyPS = new SimplePixelShader(device, deviceContext);
-	skyPS->LoadShaderFile(L"SkyPS.cso");
-	skyTexture = MaterialManager::LoadDDSTextureFromFile(L"../Resources/SunnyCubeMap.dds");
-
-	rsSky = MaterialManager::GetSkyboxRasterizerState();
-
-	// A depth state for the sky rendering
-	dsSky = MaterialManager::GetSkyboxDepthStencilState();
 }
 
 // --------------------------------------------------------
@@ -518,41 +506,17 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		renderer->DrawObject(p1Platform);
 		renderer->DrawObject(p2Platform);
 
+		sky->skyVS->SetMatrix4x4("view", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getView());
+		sky->skyVS->SetMatrix4x4("projection", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getProjection());
+
 		for (auto &disc : discs) renderer->DrawObject(disc);
 		for (auto &disc : p2discs) renderer->DrawObject(disc);
 
 		deviceContext->RSSetState(wireframeRS);
 		renderer->DrawObject(arena);
-
-		// Now that solid "stuff" is drawn, draw the sky
-		UINT stride = sizeof(Vertex);
-		UINT offset = 0;
-		ID3D11Buffer* skyVB = skyMesh->GetVertexBuffer();
-		ID3D11Buffer* skyIB = skyMesh->GetIndexBuffer();
-		deviceContext->IASetVertexBuffers(0, 1, &skyVB, &stride, &offset);
-		deviceContext->IASetIndexBuffer(skyIB, DXGI_FORMAT_R32_UINT, 0);
-
-		skyVS->SetMatrix4x4("view", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getView());
-		skyVS->SetMatrix4x4("projection", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getProjection());
-		skyVS->SetShader();
-
-		skyPS->SetShaderResourceView("sky", skyTexture);
-		//SUPER ugly fix.  I wish we had another reference to this
-		skyPS->SetSamplerState("trilinear", mat->SamplerState);
-		skyPS->SetShader();
-
-		deviceContext->RSSetState(rsSky);
-		deviceContext->OMSetDepthStencilState(dsSky, 0);
-		deviceContext->DrawIndexed(skyMesh->GetIndexCount(), 0, 0);
-
-		// Reset the states to their defaults
-		deviceContext->RSSetState(0);
-		deviceContext->OMSetDepthStencilState(0, 0);
-
-
 	}
 
-	renderer->EndFrame();
+	renderer->EndFrame(sky);
 	// Present the buffer
 	//  - Puts the image we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME
