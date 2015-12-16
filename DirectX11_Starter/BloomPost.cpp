@@ -86,7 +86,7 @@ void BloomPost::Do(ID3D11ShaderResourceView * render, ID3D11RenderTargetView * b
 
 	blurPixelShader->SetFloat("pixelWidth", pixelWidth);
 	blurPixelShader->SetFloat("pixelHeight", pixelHeight);
-	blurPixelShader->SetFloat("blurAmount", 0);
+	blurPixelShader->SetInt("blurAmount", 8);
 
 	blurPixelShader->SetShader();
 

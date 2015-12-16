@@ -23,6 +23,7 @@ SamplerState trilinear	: register(s0);
 // Entry point for this pixel shader
 float4 main(VertexToPixel input) : SV_TARGET
 {
+	//int blurAmount = 8;
 	float4 totalColor = float4(0,0,0,0);
 	int samples = 0;
 
