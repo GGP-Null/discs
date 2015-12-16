@@ -54,6 +54,8 @@ void Player::Update(FrameUpdateData upData)
 	if (KeyIsDown(Keys::U)) Rotate(XMFLOAT3(0, -deltaTime, 0));
 	else if (KeyIsDown(Keys::I)) Rotate(XMFLOAT3(0, deltaTime, 0));
 
+	Rotate(XMFLOAT3(0, Input::GetMouseX() * deltaTime * .05f, 0));
+
 	if (padState.IsConnected()) {
 		Translate(XMFLOAT3(padState.thumbSticks.leftX * deltaTime, 0, 0));
 		float rotAmt = padState.triggers.right - padState.triggers.left;
