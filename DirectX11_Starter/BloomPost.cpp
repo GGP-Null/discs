@@ -76,8 +76,8 @@ void BloomPost::Do(ID3D11ShaderResourceView * render, ID3D11RenderTargetView * b
 	const float color[4] = { 0.4f, 0.6f, 0.75f, 0.0f };
 
 	//Blur PS
-	context->OMSetRenderTargets(1, &backbuffer, nullptr);
-	context->ClearRenderTargetView(backbuffer, color);
+	context->OMSetRenderTargets(1, &rtv, nullptr);
+	context->ClearRenderTargetView(rtv, color);
 
 	vs->SetShader();
 
@@ -86,17 +86,17 @@ void BloomPost::Do(ID3D11ShaderResourceView * render, ID3D11RenderTargetView * b
 
 	blurPixelShader->SetFloat("pixelWidth", pixelWidth);
 	blurPixelShader->SetFloat("pixelHeight", pixelHeight);
-	blurPixelShader->SetInt("blurAmount", 8);
+	blurPixelShader->SetInt("blurAmount", 10);
 
 	blurPixelShader->SetShader();
 
 	context->Draw(3, 0);
 
-	//blurPixelShader->SetShaderResourceView("render", nullptr);
+	blurPixelShader->SetShaderResourceView("render", nullptr);
 
 
 	//Bloom PS
-	/*
+	
 	context->OMSetRenderTargets(1, &backbuffer, nullptr);
 	context->ClearRenderTargetView(backbuffer, color);
 
@@ -108,7 +108,7 @@ void BloomPost::Do(ID3D11ShaderResourceView * render, ID3D11RenderTargetView * b
 	bloomPixelShader->SetSamplerState("trilinear", sampler);
 	bloomPixelShader->SetShader();
 
-	context->Draw(3, 0);*/
+	context->Draw(3, 0);
 
 
 

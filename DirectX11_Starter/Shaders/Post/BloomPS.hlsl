@@ -8,6 +8,7 @@ struct VertexToPixel
 };
 
 // Textures and such
+Texture2D blurRender    : register(t1);
 Texture2D render		: register(t0);
 SamplerState trilinear	: register(s0);
 
@@ -15,5 +16,8 @@ SamplerState trilinear	: register(s0);
 // Entry point for this pixel shader
 float4 main(VertexToPixel input) : SV_TARGET
 {
-	return render.Sample(trilinear, input.uv).bgra;
+	float4 blurSample = blurRender.Sample(trilinear, input.uv);
+	blurSample = blurSample * blurSample;
+
+	return render.Sample(trilinear, input.uv) + blurSample;
 }
