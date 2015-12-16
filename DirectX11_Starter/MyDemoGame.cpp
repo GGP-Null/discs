@@ -32,6 +32,7 @@
 #include "Prototypes.h"
 #include "Globals.h"
 
+
 // For the DirectX Math library
 using namespace DirectX;
 using namespace Input;
@@ -159,7 +160,7 @@ bool MyDemoGame::Init()
 	//TODO:  set up these lights in the correct places
 	renderer = new Renderer(debugCamera, device, deviceContext);
 
-	post = new TestPostProcess(device, deviceContext);
+	post = new BloomPost(device, deviceContext, windowWidth, windowHeight);
 	renderer->SetPostProcess(post, windowWidth, windowHeight, depthStencilView, renderTargetView);
 
 	DirectionalLight testLight = {

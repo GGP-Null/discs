@@ -1,9 +1,9 @@
 #pragma once
 
 #include <windows.h>
-#include "Keyboard.h"
-#include "Mouse.h"
-#include "GamePad.h"
+#include <Keyboard.h>
+#include <Mouse.h>
+#include <GamePad.h>
 
 /// <summary>
 /// The Input namespace contains helper functions for input.

@@ -135,6 +135,9 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BloomPost.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dxerr.h">
@@ -239,6 +242,9 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BloomPost.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\PixelShader.hlsl">
@@ -260,6 +266,12 @@
       <Filter>Shaders\Post</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\Post\PostVS.hlsl">
+      <Filter>Shaders\Post</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Post\BloomPS.hlsl">
+      <Filter>Shaders\Post</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Post\BlurPS.hlsl">
       <Filter>Shaders\Post</Filter>
     </FxCompile>
   </ItemGroup>
