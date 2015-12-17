@@ -109,7 +109,7 @@ private:
 
 	DebugCamera* debugCamera;
 	TrackingCamera* trackingCamera;
-	bool useDebugCamera;
+	Camera *currentCamera;
 
 	Input::GamePad gamePad;
 

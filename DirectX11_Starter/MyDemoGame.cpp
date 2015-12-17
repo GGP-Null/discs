@@ -155,7 +155,7 @@ bool MyDemoGame::Init()
 
 	debugCamera = new DebugCamera(XMFLOAT3(0, 0, -5), XMFLOAT3(0, 0, 1), aspectRatio);
 	trackingCamera = new TrackingCamera(XMFLOAT3(0, 2, -7), XMFLOAT3(0, 0, 1), player, XMFLOAT3(0, 1, 0), .3f, aspectRatio);
-	useDebugCamera = false;
+	currentCamera = trackingCamera;
 
 	//TODO:  set up these lights in the correct places
 	renderer = new Renderer(debugCamera, device, deviceContext);
@@ -462,9 +462,9 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 	trackingCamera->Update(deltaTime, totalTime);
 
 	if (KeyPressedThisFrame(Keys::T))
-		useDebugCamera = false;
+		currentCamera = trackingCamera;
 	else if (KeyPressedThisFrame(Keys::Y))
-		useDebugCamera = true;
+		currentCamera = debugCamera;
 
 	//this stuff is here to demonstrate the flow for working with a dynamic point light
 	PointLight pl;
@@ -548,7 +548,7 @@ Disc* MyDemoGame::DiscToLaunch()
 void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 {
 	// use correct camera
-	renderer->SetCamera(useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera);
+	renderer->SetCamera(currentCamera);
 
 	renderer->StartFrame();
 
@@ -577,8 +577,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		renderer->DrawObject(p1Platform);
 		renderer->DrawObject(p2Platform);
 
-		sky->skyVS->SetMatrix4x4("view", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getView());
-		sky->skyVS->SetMatrix4x4("projection", (useDebugCamera ? (Camera*)debugCamera : (Camera*)trackingCamera)->getProjection());
+		sky->skyVS->SetMatrix4x4("view", currentCamera->getView());
+		sky->skyVS->SetMatrix4x4("projection", currentCamera->getProjection());
 
 		for (auto &disc : discs) renderer->DrawObject(disc);
 		for (auto &disc : p2discs) renderer->DrawObject(disc);
