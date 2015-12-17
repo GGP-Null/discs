@@ -30,7 +30,26 @@ UIDraw::~UIDraw()
 
 void UIDraw::DrawUI(int state)
 {
-	
+	if (state == 1) return;
+	m_spriteBatch->Begin();
+	switch (state)
+	{
+	case 0:
+		break;
+	case 1:
+		break;
+	case 2:
+		m_spriteBatch->Draw(bg, DirectX::XMFLOAT2(0, 0));
+		m_spriteBatch->Draw(instructions, DirectX::XMFLOAT2(0, center.y - 512));
+		break;
+	case 3:
+		m_spriteBatch->Draw(bg, DirectX::XMFLOAT2(0, 0));
+		m_spriteBatch->Draw(credits, DirectX::XMFLOAT2(0, center.y - 512));
+		break;
+	default:
+		break;
+	}
+	m_spriteBatch->End();
 }
 void UIDraw::DrawUI(int state, int choice)
 {
@@ -38,7 +57,7 @@ void UIDraw::DrawUI(int state, int choice)
 	switch (state)
 	{
 	case 0:
-		m_spriteBatch->Draw(bg, DirectX::XMFLOAT2(center.x - 1024, center.y - 512));
+		m_spriteBatch->Draw(bg, DirectX::XMFLOAT2(0, 0));
 		m_spriteBatch->Draw(logo, DirectX::XMFLOAT2(center.x - 1024, center.y - 512));
 		m_spriteBatch->Draw(bars, DirectX::XMFLOAT2(center.x - 1024, center.y - 512));
 		switch (choice)

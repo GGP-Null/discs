@@ -11,7 +11,8 @@ public:
 	void DrawUI(int);
 	void DrawUI(int, int);
 	ID3D11ShaderResourceView* logo;
-	ID3D11ShaderResourceView* box;
+	ID3D11ShaderResourceView* credits;
+	ID3D11ShaderResourceView* instructions;
 	ID3D11ShaderResourceView* bars;
 	ID3D11ShaderResourceView* bg;
 	ID3D11ShaderResourceView* buttons[4];

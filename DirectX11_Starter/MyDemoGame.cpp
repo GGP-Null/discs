@@ -272,7 +272,8 @@ void MyDemoGame::CreateObjects()
 	menuDrawer->logo              = loadtex(L"../Resources/menu/menuGameLogo.png");
 	menuDrawer->bars              = loadtex(L"../Resources/menu/menuBars.png");
 	menuDrawer->bg                = loadtex(L"../Resources/menu/menuBG.png");
-	menuDrawer->box               = loadtex(L"../Resources/menu/menuInstructionsBox.png");
+	menuDrawer->credits           = loadtex(L"../Resources/menu/creditsPage.png");
+	menuDrawer->instructions      = loadtex(L"../Resources/menu/InstructionsPage.png");
 	menuDrawer->buttons[0]        = loadtex(L"../Resources/menu/buttons/default/menuStartButton.png");
 	menuDrawer->buttons[1]        = loadtex(L"../Resources/menu/buttons/default/menuInstructionsButton.png");
 	menuDrawer->buttons[2]        = loadtex(L"../Resources/menu/buttons/default/menuCreditsButton.png");
@@ -421,6 +422,16 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 				if (menuChoice < 0)
 					menuChoice = 3;
 			}
+			break;
+		}
+		case INSTRUCT: {
+			if (KeyPressedThisFrame(Keys::Enter) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
+				Menu();
+			break;
+		}
+		case CREDITS: {
+			if (KeyPressedThisFrame(Keys::Enter) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
+				Menu();
 			break;
 		}
 	}
