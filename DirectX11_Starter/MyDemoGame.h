@@ -51,7 +51,7 @@ public:
 	void OnMouseMove(WPARAM btnState, int x, int y);
 
 	// Disc Testing
-	Disc* DiscToLaunch();
+	Disc* DiscToLaunch(int i);
 private:
 	int menuChoice;
 	// Keeps track of the old mouse position.  Useful for 

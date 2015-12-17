@@ -1,6 +1,9 @@
 #include "Prototypes.h"
 #include <array>
 #include <sstream>
+#include "Input.h"
+
+using namespace Input;
 
 std::array<Mesh *, 2> playerMeshes;
 Mesh *discMesh, *arenaMesh, *platformMesh;
@@ -21,7 +24,17 @@ void Prototypes::SetPlayerMesh(unsigned short playerNum, Mesh *mesh)
 
 Player *Prototypes::MakePlayer(unsigned short playerNum)
 {
-	auto player = new Player(playerMeshes[playerNum], playerMaterials[playerNum]);
+	Player* player;
+	switch (playerNum)
+	{
+	default:
+	case 0:
+		player = new Player(playerMeshes[playerNum], playerMaterials[playerNum], Keys::J, Keys::L, Keys::O, Keys::U, Keys::I);
+		break;
+	case 1:
+		player = new Player(playerMeshes[playerNum], playerMaterials[playerNum], Keys::A, Keys::D, Keys::Q, Keys::E, Keys::W);
+		break;
+	}
 
 	player->Scale(XMFLOAT3(.1f, .1f, .1f));
 	player->Rotate(XMFLOAT3(0.0f, -3.1415 / 2.0, 0.0f));

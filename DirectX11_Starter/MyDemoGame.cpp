@@ -370,7 +370,7 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 	switch (gState) {
 		case GAME: {
 			Input::SetMouseMode(Input::Mouse::MODE_RELATIVE);
-			if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
+			if (KeyPressedThisFrame(Keys::M) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
 				Menu();
 
 			int scroll = Input::GetScrollWheel();
@@ -459,16 +459,28 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 	switch (gState) {
 	case GAME:
 		player->Update(upData);
+		player2->Update(upData);
 
-		if (KeyPressedThisFrame(Keys::Space) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
+		if (KeyPressedThisFrame(player->fire) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
 		{
-			Disc* toUse = DiscToLaunch();
-			if(toUse) 
+			Disc* toUse = DiscToLaunch(0);
+			if (toUse)
 				player->Fire(toUse);
 		}
 		else
 		{
 			player->ReloadDisc();
+		}
+
+		if (KeyPressedThisFrame(player2->fire))
+		{
+			Disc* toUse = DiscToLaunch(1);
+			if (toUse)
+				player2->Fire(toUse);
+		}
+		else
+		{
+			player2->ReloadDisc();
 		}
 
 		CylinderCollider playerCollider = player2->colliderComp;
@@ -496,6 +508,10 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 				disc->OnHit();
 			}
 		}
+
+		for (auto &disc : p2discs)
+			if (disc->IsActive())
+				disc->MoveDisc(deltaTime);
 
 		if (collisionTimer > 1.0f)
 		{
@@ -532,10 +548,18 @@ void MyDemoGame::Instruct()
 // ----------------------------------------------------------
 // Temporary Test to figure out how to launch different Discs
 // ----------------------------------------------------------
-Disc* MyDemoGame::DiscToLaunch()
+Disc* MyDemoGame::DiscToLaunch(int i)
 {
-	for (auto &disc : discs)
-		if (!disc->IsActive()) return disc;
+	if (i == 0)
+	{
+		for (auto &disc : discs)
+			if (!disc->IsActive()) return disc;
+	}
+	if (i == 1)
+	{
+		for (auto &disc : p2discs)
+			if (!disc->IsActive()) return disc;
+	}
 
 	return NULL;
 }
