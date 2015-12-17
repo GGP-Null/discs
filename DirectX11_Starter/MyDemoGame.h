@@ -21,6 +21,7 @@
 #include "Console.h"
 #include "Skybox.h"
 #include "BloomPost.h"
+#include "UIDraw.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -37,7 +38,7 @@ class MyDemoGame : public DirectXGameCore
 public:
 	MyDemoGame(HINSTANCE hInstance);
 	~MyDemoGame();
-	enum gameState { START, MAIN, GAME };
+	enum gameState {MAIN, GAME, INSTRUCT, CREDITS };
 	// Overrides for base level methods
 	bool Init();
 	void OnResize();
@@ -52,6 +53,7 @@ public:
 	// Disc Testing
 	Disc* DiscToLaunch();
 private:
+	int menuChoice;
 	// Keeps track of the old mouse position.  Useful for 
 	// determining how far the mouse moved in a single frame.
 	POINT prevMousePos;
@@ -65,7 +67,9 @@ private:
 	void LoadShaders();
 	void CreateObjects();
 	void StartGame();
-	void EndGame();
+	void Menu();
+	void Instruct();
+	void Credit();
 
 	Console console;
 
@@ -82,6 +86,7 @@ private:
 	Material* matTransWhite;
 	Material* discMat;
 	Material* platformMat;
+	UIDraw* menuDrawer;
 
 	CylinderCollider cyl_col;
 
