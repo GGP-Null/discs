@@ -8,7 +8,7 @@ DiscTrail::DiscTrail(Mesh *mesh, Material *mat, Disc *disc)
 	//Rotate(XMFLOAT3(00.0f, 90.0f, 0));
 }
 
-float DiscTrail::timeToReset = 2.0f;
+float DiscTrail::timeToReset = 4.0f;
 float DiscTrail::maxDist = 2.5f;
 
 static float
