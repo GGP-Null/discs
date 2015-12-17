@@ -1,5 +1,5 @@
 #pragma once
-#include "SpriteBatch.h"
+#include <SpriteBatch.h>
 #include "SpriteFont.h"
 #include <DirectXMath.h>
 
@@ -18,7 +18,7 @@ public:
 	ID3D11ShaderResourceView* selected[4];
 	DirectX::XMFLOAT2 center;
 private:
-
+	ID3D11BlendState* blendState;
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 };
 
