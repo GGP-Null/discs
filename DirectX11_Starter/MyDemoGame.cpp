@@ -207,6 +207,8 @@ void MyDemoGame::CreateGeometry()
 
 	discMesh = MeshManager::LoadModel("../Resources/dotDisc.obj");
 	platformMesh = MeshManager::LoadModel("../Resources/dotPlatform.obj");
+
+	sqMesh = MeshManager::LoadModel("../Resources/square.obj");
 }
 
 // --------------------------------------------------------
@@ -220,6 +222,9 @@ void MyDemoGame::LoadShaders()
 
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
+
+	clipPixelShader = new SimplePixelShader(device, deviceContext);
+	clipPixelShader->LoadShaderFile(L"ClippingPixelShader.cso");
 
 	glowPixelShader = new SimplePixelShader(device, deviceContext);
 	glowPixelShader->LoadShaderFile(L"GlowPS.cso");
@@ -255,6 +260,9 @@ void MyDemoGame::CreateObjects()
 	matTrans->transparency = 0.5f;
 	matTransWhite->transparency = 0.5f;
 
+	sqMat = MaterialManager::CloneStandardMaterial();
+	sqMat->PixelShader = clipPixelShader;
+
 	auto loadtex = MaterialManager::LoadWICTextureFromFile;
 
 	p1mat->ResourceView           = loadtex(L"../Resources/Textures/playerOneUV.png");
@@ -269,6 +277,7 @@ void MyDemoGame::CreateObjects()
 	p2mat->GlowResourceView       = loadtex(L"../Resources/GlowMaps/playerTwoUVGlowMap.png");
 	discMat->GlowResourceView     = loadtex(L"../Resources/GlowMaps/discTextureGlowMap.png");
 	platformMat->GlowResourceView = loadtex(L"../Resources/GlowMaps/platformTextureGlowMap.png");
+
 	menuDrawer->logo              = loadtex(L"../Resources/menu/menuGameLogo.png");
 	menuDrawer->bars              = loadtex(L"../Resources/menu/menuBars.png");
 	menuDrawer->bg                = loadtex(L"../Resources/menu/menuBG.png");
@@ -283,6 +292,8 @@ void MyDemoGame::CreateObjects()
 	menuDrawer->selected[2]       = loadtex(L"../Resources/menu/buttons/selected/menuCreditsButtonSelected.png");
 	menuDrawer->selected[3]       = loadtex(L"../Resources/menu/buttons/selected/menuQuitGameButtonSelected.png");
 
+	sqMat->ResourceView           = loadtex(L"../Resources/Textures/discTrail.png");
+
 	mat->SamplerState           = MaterialManager::GetStandardSamplerState();
 	p1mat->SamplerState         = mat->SamplerState;
 	p2mat->SamplerState         = mat->SamplerState;
@@ -291,8 +302,10 @@ void MyDemoGame::CreateObjects()
 	matTransWhite->SamplerState = mat->SamplerState;
 	discMat->SamplerState       = mat->SamplerState;
 	platformMat->SamplerState   = mat->SamplerState;
+	sqMat->SamplerState         = mat->SamplerState;
 	
 	mat->RasterizerState = solidRS;
+	sqMat->RasterizerState = solidRS;
 	matTrans->RasterizerState = transRS;
 	matTrans->RasterizerState = transRS;
 	matWireframe->RasterizerState = wireframeRS;
@@ -322,6 +335,9 @@ void MyDemoGame::CreateObjects()
 	p1Platform = Prototypes::MakePlatform(0);
 	p2Platform = Prototypes::MakePlatform(1);
 
+	Prototypes::SetSquareMaterial(sqMat);
+	Prototypes::SetSquareMesh(sqMesh);
+	square = Prototypes::MakeSquare();
 }
 
 #pragma endregion
@@ -579,6 +595,8 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 
 		for (auto &disc : discs) renderer->DrawObject(disc);
 		for (auto &disc : p2discs) renderer->DrawObject(disc);
+
+		renderer->DrawObject(square);
 
 		deviceContext->RSSetState(wireframeRS);
 		renderer->DrawObject(arena);

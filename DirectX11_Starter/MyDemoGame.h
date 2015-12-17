@@ -78,6 +78,9 @@ private:
 	Mesh* discMesh;
 	Mesh* platformMesh;
 	Mesh *arenaMesh;
+	Mesh* skyMesh;
+	Mesh* sqMesh;
+
 	Material *p1mat;
 	Material *p2mat;
 	Material *mat;
@@ -86,7 +89,10 @@ private:
 	Material* matTransWhite;
 	Material* discMat;
 	Material* platformMat;
+	Material* sqMat;
 	UIDraw* menuDrawer;
+
+	GameObject *square;
 
 	CylinderCollider cyl_col;
 
@@ -112,6 +118,7 @@ private:
 	// Wrappers for DirectX shaders to provide simplified functionality
 	SimpleVertexShader* vertexShader;
 	SimplePixelShader* pixelShader;
+	SimplePixelShader* clipPixelShader;
 	SimplePixelShader* glowPixelShader;
 
 	ID3D11RasterizerState* wireframeRS;

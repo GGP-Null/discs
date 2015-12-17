@@ -283,6 +283,9 @@
     <FxCompile Include="Shaders\Post\BlurPS.hlsl">
       <Filter>Shaders\Post</Filter>
     </FxCompile>
+    <FxCompile Include="ClippingPixelShader.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

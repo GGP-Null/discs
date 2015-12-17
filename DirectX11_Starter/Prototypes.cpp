@@ -2,12 +2,14 @@
 #include <array>
 #include <sstream>
 
-std::array<Mesh *, 2> playerMeshes;
-Mesh *discMesh, *arenaMesh, *platformMesh;
+namespace {
+	std::array<Mesh *, 2> playerMeshes;
+	Mesh *discMesh, *arenaMesh, *platformMesh, *squareMesh;
 
-std::array<Material *, 2> platformMaterial;
-std::array<Material *, 2> playerMaterials;
-Material *discMaterial, *arenaMaterial;
+	std::array<Material *, 2> platformMaterial;
+	std::array<Material *, 2> playerMaterials;
+	Material *discMaterial, *arenaMaterial, *squareMat;
+};
 
 void Prototypes::SetPlayerMaterial(unsigned short playerNum, Material *mat)
 {
@@ -39,6 +41,7 @@ Player *Prototypes::MakePlayer(unsigned short playerNum)
 	return player;
 }
 
+
 void Prototypes::SetDiscMaterial(Material *mat)
 {
 	discMaterial = mat;
@@ -57,6 +60,7 @@ Disc *Prototypes::MakeDisc(Player *player)
 
 	return disc;
 }
+
 
 void Prototypes::SetArenaMesh(Mesh *mesh)
 {
@@ -77,6 +81,7 @@ GameObject *Prototypes::MakeArena()
 	arena->SetDebugName("arena");
 	return arena;
 }
+
 
 void Prototypes::SetPlatformMesh(Mesh *mesh)
 {
@@ -112,4 +117,21 @@ GameObject *Prototypes::MakePlatform(unsigned short playerNum)
 	platform->SetDebugName(platName.str());
 
 	return platform;
+}
+
+void Prototypes::SetSquareMaterial(Material *mat)
+{
+	squareMat = mat;
+}
+
+void Prototypes::SetSquareMesh(Mesh *mesh)
+{
+	squareMesh = mesh;
+}
+
+GameObject *Prototypes::MakeSquare()
+{
+	auto sq = new GameObject(squareMesh, squareMat);
+	sq->Translate(XMFLOAT3(0, 0, 6.0f));
+	return sq;
 }
