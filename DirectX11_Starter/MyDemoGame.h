@@ -117,6 +117,7 @@ private:
 	gameState gState;
 	// Wrappers for DirectX shaders to provide simplified functionality
 	SimpleVertexShader* vertexShader;
+	SimpleVertexShader* sparkingVertexShader;
 	SimplePixelShader* pixelShader;
 	SimplePixelShader* clipPixelShader;
 	SimplePixelShader* glowPixelShader;

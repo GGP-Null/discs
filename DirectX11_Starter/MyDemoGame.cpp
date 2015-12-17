@@ -220,6 +220,9 @@ void MyDemoGame::LoadShaders()
 	vertexShader = new SimpleVertexShader(device, deviceContext);
 	vertexShader->LoadShaderFile(L"VertexShader.cso");
 
+	sparkingVertexShader = new SimpleVertexShader(device, deviceContext);
+	sparkingVertexShader->LoadShaderFile(L"SparkingVertexShader.cso");
+
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
 
@@ -261,6 +264,7 @@ void MyDemoGame::CreateObjects()
 	matTransWhite->transparency = 0.5f;
 
 	sqMat = MaterialManager::CloneStandardMaterial();
+	sqMat->VertexShader = sparkingVertexShader;
 	sqMat->PixelShader = clipPixelShader;
 
 	auto loadtex = MaterialManager::LoadWICTextureFromFile;
