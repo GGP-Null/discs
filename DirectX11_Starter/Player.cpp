@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Disc.h"
+
 using namespace Input;
 
 Player::Player(Mesh* m, Material* mat, Key lKey, Key rKey, Key cwKey, Key ccwKey, Key fireKey)
@@ -13,6 +14,10 @@ Player::Player(Mesh* m, Material* mat, Key lKey, Key rKey, Key cwKey, Key ccwKey
 	rotRight = cwKey;
 	rotLeft = ccwKey;
 	fire = fireKey;
+	if (lKey == Keys::A)
+	{
+		gamePad = Input::GamePad::FromId(1);
+	}
 }
 
 
@@ -59,16 +64,15 @@ void Player::Update(FrameUpdateData upData)
 	if (KeyIsDown(rotLeft)) Rotate(XMFLOAT3(0, -deltaTime, 0));
 	else if (KeyIsDown(rotRight)) Rotate(XMFLOAT3(0, deltaTime, 0));
 
+	if (padState.IsConnected()) {
+		Translate(XMFLOAT3(padState.thumbSticks.leftX * deltaTime, 0, 0));
+		float rotAmt = padState.triggers.right - padState.triggers.left;
+		Rotate(XMFLOAT3(0, rotAmt * deltaTime, 0));
+	}
+
 	if (playerNum == 0)
 	{
 		Rotate(XMFLOAT3(0, Input::GetMouseX() * deltaTime * .05f, 0));
-
-
-		if (padState.IsConnected()) {
-			Translate(XMFLOAT3(padState.thumbSticks.leftX * deltaTime, 0, 0));
-			float rotAmt = padState.triggers.right - padState.triggers.left;
-			Rotate(XMFLOAT3(0, rotAmt * deltaTime, 0));
-		}
 	}
 }
 
