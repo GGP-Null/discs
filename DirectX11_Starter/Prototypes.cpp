@@ -136,17 +136,18 @@ GameObject *Prototypes::MakeSquare()
 	return sq;
 }
 
-void Prototypes::SetDiscMaterial(Material *mat)
+
+void Prototypes::SetDiscTrailMaterial(Material *mat)
 {
 	discTrailMat= mat;
 }
 
-void Prototypes::SetSquareMesh(Mesh *mesh)
+void Prototypes::SetDiscTrailMesh(Mesh *mesh)
 {
 	discTrailMesh = mesh;
 }
 
 DiscTrail *Prototypes::MakeDiscTrail(Disc *disc)
 {
-	auto dt = new DiscTrail(discTrailMesh, discTrailMat, disc);
+	return new DiscTrail(discTrailMesh, discTrailMat, disc);
 }

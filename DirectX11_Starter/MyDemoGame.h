@@ -22,6 +22,7 @@
 #include "Skybox.h"
 #include "BloomPost.h"
 #include "UIDraw.h"
+#include "DiscTrail.h"
 
 // Include run-time memory checking in debug builds, so 
 // we can be notified of memory leaks
@@ -80,6 +81,7 @@ private:
 	Mesh *arenaMesh;
 	Mesh* skyMesh;
 	Mesh* sqMesh;
+	Mesh* discTrailMesh;
 
 	Material *p1mat;
 	Material *p2mat;
@@ -90,6 +92,7 @@ private:
 	Material* discMat;
 	Material* platformMat;
 	Material* sqMat;
+	Material* discTrailMat;
 	UIDraw* menuDrawer;
 
 	GameObject *square;
@@ -100,6 +103,7 @@ private:
 	Player* player2;
 	std::array<Disc*, 3> discs;
 	std::array<Disc*, 3> p2discs;
+	std::array<DiscTrail*, 6> discTrails;
 	std::array<bool, 3> discIsColliding;
 	GameObject* arena;
 	GameObject* p1Platform;
@@ -117,7 +121,6 @@ private:
 	gameState gState;
 	// Wrappers for DirectX shaders to provide simplified functionality
 	SimpleVertexShader* vertexShader;
-	SimpleVertexShader* sparkingVertexShader;
 	SimplePixelShader* pixelShader;
 	SimplePixelShader* clipPixelShader;
 	SimplePixelShader* glowPixelShader;

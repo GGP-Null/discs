@@ -3,30 +3,39 @@
 
 
 DiscTrail::DiscTrail(Mesh *mesh, Material *mat, Disc *disc)
-	: attachedTo(disc), GameObject(mesh, mat)
+	: attachedTo(disc), GameObject(mesh, mat), duration(0)
 {
-	Rotate(XMFLOAT3(90.0f, 0, 0));
+	//Rotate(XMFLOAT3(00.0f, 90.0f, 0));
 }
 
-float DiscTrail::distToReset = 1.0f;
+float DiscTrail::timeToReset = 2.0f;
+float DiscTrail::maxDist = 2.5f;
+
+static float
+quicklerp(float from, float to, float t)
+{
+	return from + (t * (to - from));
+}
 
 void DiscTrail::Update(FrameUpdateData frameData)
 {
-	// get disc velocity
-	auto discTrans = attachedTo->GetTranslation();
-	XMVECTOR discPos = XMLoadFloat3(&discTrans);
-	XMVECTOR deltaTrans = XMLoadFloat3(&attachedTo->velocity);
-	// make self's vel 75% of it
-	deltaTrans *= frameData.DeltaTime * 0.75f;
-	// move
-	XMVECTOR transVec = XMLoadFloat3(&translation);
-	XMVECTOR newPos = XMVectorAdd(deltaTrans, transVec);
-	// if dist > some magic value, reset
-	XMVECTOR distVec = XMVector3Length(newPos - discPos);
-	float dist;
-	XMStoreFloat(&dist, distVec);
+	duration += frameData.DeltaTime;
+	if (duration > timeToReset) duration = 0.0f;
 
-	if (dist > distToReset) newPos = discPos;
+	// lerp
+	float dist = quicklerp(0.0f, maxDist, duration/timeToReset);
 
-	XMStoreFloat3(&translation, newPos);
+	XMVECTOR discVel = XMLoadFloat3(&attachedTo->velocity);
+	XMVECTOR discDir = XMVector3Normalize(discVel);
+
+	XMVECTOR deltaPos = XMVectorMultiply(discDir, XMVectorReplicate(dist));
+
+	auto discPos = attachedTo->GetTranslation();
+	XMVECTOR discPosVec = XMLoadFloat3(&discPos);
+
+	XMVECTOR newPos = discPosVec - deltaPos;
+
+	XMFLOAT3 newPosF;
+	XMStoreFloat3(&newPosF, newPos);
+	SetTranslation(newPosF);
 }

@@ -3,6 +3,7 @@
 #include "CylinderColliderComponent.h"
 
 class Player;
+class DiscTrail;
 
 class Disc : public GameObject
 {
@@ -15,6 +16,7 @@ public:
 	void OnHit();
 	CylinderColliderComponent colliderComp;
 	XMFLOAT3 velocity;
+	DiscTrail *trail;
 private:
 	bool isActive;
 	Player* player;

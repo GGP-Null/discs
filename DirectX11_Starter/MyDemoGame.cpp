@@ -209,6 +209,7 @@ void MyDemoGame::CreateGeometry()
 	platformMesh = MeshManager::LoadModel("../Resources/dotPlatform.obj");
 
 	sqMesh = MeshManager::LoadModel("../Resources/square.obj");
+	discTrailMesh = sqMesh;
 }
 
 // --------------------------------------------------------
@@ -219,9 +220,6 @@ void MyDemoGame::LoadShaders()
 {
 	vertexShader = new SimpleVertexShader(device, deviceContext);
 	vertexShader->LoadShaderFile(L"VertexShader.cso");
-
-	sparkingVertexShader = new SimpleVertexShader(device, deviceContext);
-	sparkingVertexShader->LoadShaderFile(L"SparkingVertexShader.cso");
 
 	pixelShader = new SimplePixelShader(device, deviceContext);
 	pixelShader->LoadShaderFile(L"PixelShader.cso");
@@ -264,8 +262,9 @@ void MyDemoGame::CreateObjects()
 	matTransWhite->transparency = 0.5f;
 
 	sqMat = MaterialManager::CloneStandardMaterial();
-	sqMat->VertexShader = sparkingVertexShader;
 	sqMat->PixelShader = clipPixelShader;
+
+	discTrailMat = sqMat;
 
 	auto loadtex = MaterialManager::LoadWICTextureFromFile;
 
@@ -342,6 +341,13 @@ void MyDemoGame::CreateObjects()
 	Prototypes::SetSquareMaterial(sqMat);
 	Prototypes::SetSquareMesh(sqMesh);
 	square = Prototypes::MakeSquare();
+
+	Prototypes::SetDiscTrailMaterial(discTrailMat);
+	Prototypes::SetDiscTrailMesh(discTrailMesh);
+	for (int i = 0; i < 3; ++i)
+		discTrails[i] = Prototypes::MakeDiscTrail(discs[i]);
+	for (int i = 3; i < 6; ++i)
+		discTrails[i] = Prototypes::MakeDiscTrail(p2discs[i-3]);
 }
 
 #pragma endregion
@@ -513,6 +519,11 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 			}
 		}
 
+		for (auto discTrail : discTrails) {
+			if (!discTrail->attachedTo->IsActive()) continue;
+
+			discTrail->Update(upData);
+		}
 	}
 }
 void MyDemoGame::StartGame()
@@ -582,8 +593,11 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 
 		for (auto &disc : discs) renderer->DrawObject(disc);
 		for (auto &disc : p2discs) renderer->DrawObject(disc);
+		for (auto discTrail : discTrails) {
+			if (discTrail->attachedTo->IsActive()) renderer->DrawObject(discTrail);
+		}
 
-		renderer->DrawObject(square);
+		//renderer->DrawObject(square);
 
 		deviceContext->RSSetState(wireframeRS);
 		renderer->DrawObject(arena);

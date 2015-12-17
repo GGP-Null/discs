@@ -82,6 +82,7 @@
     <ClCompile Include="CylinderCollider.cpp" />
     <ClCompile Include="CylinderColliderBuilder.cpp" />
     <ClCompile Include="Disc.cpp" />
+    <ClCompile Include="DiscTrail.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GamePad.cpp" />
     <ClCompile Include="Globals.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="CylinderColliderBuilder.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Disc.h" />
+    <ClInclude Include="DiscTrail.h" />
     <ClInclude Include="DistanceFromCamera.h" />
     <ClInclude Include="FrameUpdateData.h" />
     <ClInclude Include="GameObject.h" />

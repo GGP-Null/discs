@@ -9,8 +9,10 @@ struct DiscTrail :
 	DiscTrail(Mesh *, Material *, Disc *);
 	virtual void Update(FrameUpdateData);
 
-	static float distToReset;
+	static float timeToReset;
+	static float maxDist;
 
 	Disc *attachedTo;
+	float duration;
 };
 

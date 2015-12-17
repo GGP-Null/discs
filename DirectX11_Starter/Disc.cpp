@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 #include "Player.h"
-
+#include "DiscTrail.h"
 #include "MeshManager.h"
 
 
@@ -56,6 +56,10 @@ void Disc::Launch(XMFLOAT3 p, XMFLOAT3 r)
 {
 	isActive = true;
 	SetTranslation(p);
+	if (trail) {
+		trail->SetTranslation(p);
+		trail->duration = 0;
+	}
 	SetRotation(r);
 	velocity = XMFLOAT3(10 * cos(-rotation.y), 0, 10 * sin(-rotation.y));
 	//velocity = XMFLOAT3(5, 0, 10 * cos(rotation.y));
