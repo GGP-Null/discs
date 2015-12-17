@@ -493,10 +493,6 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 
 		CylinderCollider playerCollider = player2->colliderComp;
 
-		static float collisionTimer = 0.0f;
-
-		collisionTimer += deltaTime;
-
 		for (unsigned int i = 0; i < discs.size(); ++i)
 		{
 			auto &disc = discs[i];
@@ -515,19 +511,6 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 				player2->OnDiscHit();
 				disc->OnHit();
 			}
-		}
-
-		if (collisionTimer > 1.0f)
-		{
-			std::wstringstream newCaption;
-			for (auto &colliding : discIsColliding)
-			{
-				newCaption << '[' << ((colliding) ? 'x' : ' ') << ']';
-				colliding = false;
-			}
-
-			windowCaption = newCaption.str();
-			collisionTimer = 0.0f;
 		}
 
 	}
