@@ -104,6 +104,7 @@
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="TestPostProcess.cpp" />
     <ClCompile Include="TrackingCamera.cpp" />
+    <ClCompile Include="UIDraw.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BloomPost.h" />
@@ -140,6 +141,7 @@
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="TestPostProcess.h" />
     <ClInclude Include="TrackingCamera.h" />
+    <ClInclude Include="UIDraw.h" />
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>

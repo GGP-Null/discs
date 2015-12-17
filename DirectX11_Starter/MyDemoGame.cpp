@@ -233,6 +233,8 @@ void MyDemoGame::LoadShaders()
 // --------------------------------------------------------
 void MyDemoGame::CreateObjects()
 {
+	menuDrawer = new UIDraw(deviceContext, device);
+	menuDrawer->center = DirectX::XMFLOAT2(windowWidth / 2, windowHeight / 2);
 	p1mat = MaterialManager::CloneStandardMaterial();
 	p1mat->PixelShader = glowPixelShader;
 
@@ -267,6 +269,18 @@ void MyDemoGame::CreateObjects()
 	p2mat->GlowResourceView       = loadtex(L"../Resources/GlowMaps/playerTwoUVGlowMap.png");
 	discMat->GlowResourceView     = loadtex(L"../Resources/GlowMaps/discTextureGlowMap.png");
 	platformMat->GlowResourceView = loadtex(L"../Resources/GlowMaps/platformTextureGlowMap.png");
+	menuDrawer->logo              = loadtex(L"../Resources/menu/menuGameLogo.png");
+	menuDrawer->bars              = loadtex(L"../Resources/menu/menuBars.png");
+	menuDrawer->bg                = loadtex(L"../Resources/menu/menuBG.png");
+	menuDrawer->box               = loadtex(L"../Resources/menu/menuInstructionsBox.png");
+	menuDrawer->buttons[0]        = loadtex(L"../Resources/menu/buttons/default/menuStartButton.png");
+	menuDrawer->buttons[1]        = loadtex(L"../Resources/menu/buttons/default/menuInstructionsButton.png");
+	menuDrawer->buttons[2]        = loadtex(L"../Resources/menu/buttons/default/menuCreditsButton.png");
+	menuDrawer->buttons[3]        = loadtex(L"../Resources/menu/buttons/default/menuQuitGameButton.png");
+	menuDrawer->selected[0]       = loadtex(L"../Resources/menu/buttons/selected/menuStartButtonSelected.png");
+	menuDrawer->selected[1]       = loadtex(L"../Resources/menu/buttons/selected/menuInstructionsButtonSelected.png");
+	menuDrawer->selected[2]       = loadtex(L"../Resources/menu/buttons/selected/menuCreditsButtonSelected.png");
+	menuDrawer->selected[3]       = loadtex(L"../Resources/menu/buttons/selected/menuQuitGameButtonSelected.png");
 
 	mat->SamplerState           = MaterialManager::GetStandardSamplerState();
 	p1mat->SamplerState         = mat->SamplerState;
@@ -330,6 +344,10 @@ void MyDemoGame::OnResize()
 	{
 		trackingCamera->CreateProjMatrix(aspectRatio);
 	}
+	if (menuDrawer != NULL)
+	{
+		menuDrawer->center = DirectX::XMFLOAT2(windowWidth / 2, windowHeight / 2);
+	}
 }
 #pragma endregion
 
@@ -349,33 +367,62 @@ void MyDemoGame::UpdateScene(float deltaTime, float totalTime)
 		Quit();
 
 	switch (gState) {
-	case GAME: {
-		Input::SetMouseMode(Input::Mouse::MODE_RELATIVE);
-		if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
-			EndGame();
+		case GAME: {
+			Input::SetMouseMode(Input::Mouse::MODE_RELATIVE);
+			if (KeyPressedThisFrame(Keys::Q) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
+				Menu();
 
-		int scroll = Input::GetScrollWheel();
-		Input::ResetScrollWheel();
+			int scroll = Input::GetScrollWheel();
+			Input::ResetScrollWheel();
 
-		if (scroll) {
-			auto &transparency = arena->GetMaterial()->transparency;
+			if (scroll) {
+				auto &transparency = arena->GetMaterial()->transparency;
 
-			transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
+				transparency += scroll * SCROLL_WHEEL_TO_TRANSPARENCY;
 
-			transparency = (transparency > 1.0f) ? 1.0f : transparency;
-			transparency = (transparency < 0.0f) ? 0.0f : transparency;
+				transparency = (transparency > 1.0f) ? 1.0f : transparency;
+				transparency = (transparency < 0.0f) ? 0.0f : transparency;
+			}
+			break;
 		}
-		break;
-	}
 
 
-	case MAIN:
-		Input::SetMouseMode(Input::Mouse::MODE_ABSOLUTE);
-		if (KeyPressedThisFrame(Keys::Enter) || gamePad.ButtonPressedThisFrame(trackedPadState.start))
-			StartGame();
-
-		break;
-
+		case MAIN: {
+			Input::SetMouseMode(Input::Mouse::MODE_ABSOLUTE);
+			if (KeyPressedThisFrame(Keys::Enter) || gamePad.ButtonPressedThisFrame(trackedPadState.a))
+			{
+				switch (menuChoice)
+				{
+				case 0:
+					StartGame();
+					break;
+				case 1:
+					Instruct();
+					break;
+				case 2:
+					Credit();
+					break;
+				case 3:
+					Quit();
+					break;
+				default:
+					break;
+				}
+			}
+			if (KeyPressedThisFrame(Keys::Down) || gamePad.ButtonPressedThisFrame(trackedPadState.dpadDown) || gamePad.GetState().thumbSticks.leftY < -0.75f)
+			{
+				menuChoice++;
+				if (menuChoice > 3)
+					menuChoice = 0;
+			}
+			if (KeyPressedThisFrame(Keys::Up) || gamePad.ButtonPressedThisFrame(trackedPadState.dpadUp) || gamePad.GetState().thumbSticks.leftY > 0.75f)
+			{
+				menuChoice--;
+				if (menuChoice < 0)
+					menuChoice = 3;
+			}
+			break;
+		}
 	}
 
 	FrameUpdateData upData{ deltaTime, totalTime };
@@ -458,10 +505,19 @@ void MyDemoGame::StartGame()
 {
 	gState = GAME;
 }
-void MyDemoGame::EndGame()
+void MyDemoGame::Menu()
 {
 	gState = MAIN;
 }
+void MyDemoGame::Credit()
+{
+	gState = CREDITS;
+}
+void MyDemoGame::Instruct()
+{
+	gState = INSTRUCT;
+}
+
 // ----------------------------------------------------------
 // Temporary Test to figure out how to launch different Discs
 // ----------------------------------------------------------
@@ -496,7 +552,7 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 		1.0f,
 		0);
 
-	gState = GAME;
+	//gState = GAME;
 	//is the game going
 	if (gState == GAME)
 	{
@@ -518,6 +574,10 @@ void MyDemoGame::DrawScene(float deltaTime, float totalTime)
 	}
 
 	renderer->EndFrame(sky);
+	if (gState != MAIN)
+		menuDrawer->DrawUI(gState);
+	else
+		menuDrawer->DrawUI(gState, menuChoice);
 	// Present the buffer
 	//  - Puts the image we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME
