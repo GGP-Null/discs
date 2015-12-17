@@ -14,8 +14,8 @@ public:
 	bool IsActive() const { return isActive; }
 	void OnHit();
 	CylinderColliderComponent colliderComp;
+	XMFLOAT3 velocity;
 private:
 	bool isActive;
-	XMFLOAT3 velocity;
 	Player* player;
 };

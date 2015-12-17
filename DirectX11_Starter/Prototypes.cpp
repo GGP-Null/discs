@@ -4,11 +4,11 @@
 
 namespace {
 	std::array<Mesh *, 2> playerMeshes;
-	Mesh *discMesh, *arenaMesh, *platformMesh, *squareMesh;
+	Mesh *discMesh, *arenaMesh, *platformMesh, *squareMesh, *discTrailMesh;
 
 	std::array<Material *, 2> platformMaterial;
 	std::array<Material *, 2> playerMaterials;
-	Material *discMaterial, *arenaMaterial, *squareMat;
+	Material *discMaterial, *arenaMaterial, *squareMat, *discTrailMat;
 };
 
 void Prototypes::SetPlayerMaterial(unsigned short playerNum, Material *mat)
@@ -134,4 +134,19 @@ GameObject *Prototypes::MakeSquare()
 	auto sq = new GameObject(squareMesh, squareMat);
 	sq->Translate(XMFLOAT3(0, 0, 6.0f));
 	return sq;
+}
+
+void Prototypes::SetDiscMaterial(Material *mat)
+{
+	discTrailMat= mat;
+}
+
+void Prototypes::SetSquareMesh(Mesh *mesh)
+{
+	discTrailMesh = mesh;
+}
+
+DiscTrail *Prototypes::MakeDiscTrail(Disc *disc)
+{
+	auto dt = new DiscTrail(discTrailMesh, discTrailMat, disc);
 }

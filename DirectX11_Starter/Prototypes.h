@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "Disc.h"
+#include "DiscTrail.h"
 #include "Material.h"
 #include "Mesh.h"
 
@@ -18,6 +19,10 @@ namespace Prototypes
 	void SetSquareMesh(Mesh *mesh);
 	void SetSquareMaterial(Material *mat);
 	GameObject *MakeSquare();
+
+	void SetDiscTrailMesh(Mesh *mesh);
+	void SetDiscTrailMaterial(Material *mat);
+	DiscTrail *MakeDiscTrail(Disc *);
 
 	void SetArenaMesh(Mesh *mesh);
 	void SetArenaMaterial(Material *mat);

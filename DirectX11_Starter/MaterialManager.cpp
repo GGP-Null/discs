@@ -24,7 +24,10 @@ namespace {
 		*skyboxRastState = nullptr
 		;
 
-	ID3D11DepthStencilState *skyboxDepthStencilState = nullptr;
+	ID3D11DepthStencilState
+		*skyboxDepthStencilState = nullptr,
+		*particleDepthStencilState = nullptr
+		;
 
 	// TODO: there's probably a better way of storing these
 	// TODO: is there tho
@@ -215,3 +218,19 @@ ID3D11DepthStencilState *MaterialManager::GetSkyboxDepthStencilState()
 
 	return skyboxDepthStencilState;
 }
+
+ID3D11DepthStencilState *MaterialManager::GetParticleDepthStencilState()
+{
+	if (particleDepthStencilState) return particleDepthStencilState;
+
+	D3D11_DEPTH_STENCIL_DESC dsDesc;
+	ZeroMemory(&dsDesc, sizeof(dsDesc));
+	dsDesc.DepthEnable = true;
+	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	device->CreateDepthStencilState(&dsDesc, &particleDepthStencilState);
+
+	return particleDepthStencilState;
+}
+

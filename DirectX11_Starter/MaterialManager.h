@@ -18,6 +18,7 @@ namespace MaterialManager
 	ID3D11RasterizerState *GetSkyboxRasterizerState();
 
 	ID3D11DepthStencilState *GetSkyboxDepthStencilState();
+	ID3D11DepthStencilState *GetParticleDepthStencilState();
 
 	Material *CloneStandardMaterial();
 
